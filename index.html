@@ -813,7 +813,7 @@ footer{padding:50px 36px;text-align:center;border-top:1px solid var(--border);ba
     <img id="foot-logo" alt="AktronPhs">
     <span>AktronPhs</span>
   </div>
-  <p class="ft">Quad-AI Physics Platform &nbsp;·&nbsp; Groq LLaMA 3.3-70B + Groq Mixtral + Together Qwen2.5-72B + DeepSeek &nbsp;·&nbsp; 10 модулей &nbsp;·&nbsp; 200+ формул</p>
+  <p class="ft">Quad-AI Physics Platform &nbsp;·&nbsp; Groq LLaMA 3.3-70B + Groq LLaMA-8B + Together Qwen2.5-72B + DeepSeek &nbsp;·&nbsp; 10 модулей &nbsp;·&nbsp; 200+ формул</p>
   <div class="dual-indicator">
     <div class="di-gem"></div>
     <span style="font-family:'JetBrains Mono',monospace;font-size:0.5rem;color:var(--mono);letter-spacing:.2em">LLAMA</span>
@@ -860,13 +860,13 @@ async function callGroqLlama(prompt){
   return d.choices[0].message.content;
 }
 
-/* --- Groq Mixtral: педагог с примерами --- */
+/* --- Groq llama-3.1-8b-instant: педагог с примерами --- */
 async function callGroqMixtral(prompt){
   const r=await fetch(GROQ_URL,{
     method:'POST',
     headers:{'Content-Type':'application/json','Authorization':'Bearer '+GROQ_KEY},
     body:JSON.stringify({
-      model:'mixtral-8x7b-32768',
+      model:'llama-3.1-8b-instant',
       messages:[
         {role:'system',content:'Ты физик-педагог. Объясняй живо: аналогии из жизни, примеры, неожиданные факты. До 250 слов. На русском.'},
         {role:'user',content:prompt}
@@ -875,7 +875,7 @@ async function callGroqMixtral(prompt){
     })
   });
   const d=await r.json();
-  if(d.error) throw new Error('Groq Mixtral: '+d.error.message);
+  if(d.error) throw new Error('Groq LLaMA-8B: '+d.error.message);
   return d.choices[0].message.content;
 }
 
@@ -963,7 +963,7 @@ async function dualAI(container, p1, p2, synthPrompt, imgBase64=null){
       <div class="step-body" id="${container}-gem-b">Анализирует...</div>
     </div>
     <div class="ai-step grq show" id="${container}-grq">
-      <div class="step-label"><div class="dot"></div>Groq Mixtral 8x7B — педагогический взгляд</div>
+      <div class="step-label"><div class="dot"></div>Groq LLaMA-3.1-8B — педагогический взгляд</div>
       <div class="step-body" id="${container}-grq-b">Думает...</div>
     </div>
     <div class="ai-step grq show" id="${container}-tog">
