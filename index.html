@@ -369,7 +369,7 @@ footer{padding:50px 36px;text-align:center;border-top:1px solid var(--border);ba
       <div class="fg">
         <label class="fl">Режим ИИ</label>
         <select class="fs" id="vis-mode">
-          <option value="dual">Quad-AI (LLaMA + Mixtral + Qwen + DeepSeek)</option>
+          <option value="dual">Quad-AI (LLaMA-70B + LLaMA-8B + Qwen2.5-72B + DeepSeek)</option>
           <option value="gemini">Только Gemini</option>
         </select>
       </div>
@@ -608,7 +608,7 @@ footer{padding:50px 36px;text-align:center;border-top:1px solid var(--border);ba
     <div class="chat-m" id="chatm">
       <div class="msg ai">
         <div class="mav"><svg viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="5" stroke="rgba(200,215,240,0.5)" stroke-width=".8"/><circle cx="7" cy="7" r="1.8" fill="rgba(200,215,240,0.3)"/></svg></div>
-        <div class="mb">Привет! Я AktronPhs — Quad-AI физика-ассистент.<br><br>Задавайте любые вопросы по физике. LLaMA, Mixtral, Qwen и DeepSeek работают вместе: сначала совещаются, потом дают вам лучший синтезированный ответ — от классической механики до квантовой физики.</div>
+        <div class="mb">Привет! Я AktronPhs — Quad-AI физика-ассистент.<br><br>Задавайте любые вопросы по физике. LLaMA-70B, LLaMA-8B, Qwen2.5 и DeepSeek работают вместе: сначала совещаются, потом дают вам лучший синтезированный ответ — от классической механики до квантовой физики.</div>
       </div>
     </div>
     <div class="cir">
@@ -813,7 +813,7 @@ footer{padding:50px 36px;text-align:center;border-top:1px solid var(--border);ba
     <img id="foot-logo" alt="AktronPhs">
     <span>AktronPhs</span>
   </div>
-  <p class="ft">Quad-AI Physics Platform &nbsp;·&nbsp; Groq LLaMA 3.3-70B + Groq LLaMA-8B + Together Qwen2.5-72B + DeepSeek &nbsp;·&nbsp; 10 модулей &nbsp;·&nbsp; 200+ формул</p>
+  <p class="ft">Quad-AI Physics Platform &nbsp;·&nbsp; Groq LLaMA 3.3-70B + Groq LLaMA-8B + Groq Gemma2-9B + DeepSeek &nbsp;·&nbsp; 10 модулей &nbsp;·&nbsp; 200+ формул</p>
   <div class="dual-indicator">
     <div class="di-gem"></div>
     <span style="font-family:'JetBrains Mono',monospace;font-size:0.5rem;color:var(--mono);letter-spacing:.2em">LLAMA</span>
@@ -830,10 +830,10 @@ footer{padding:50px 36px;text-align:center;border-top:1px solid var(--border);ba
 </footer>
 </div>
 <script>
-/* ===== QUAD-AI ENGINE: Groq LLaMA-3.3-70B + Groq Mixtral + DeepSeek + Together AI ===== */
+/* ===== QUAD-AI ENGINE: Groq LLaMA-3.3-70B + Groq LLaMA-8B + Together Qwen2.5-72B + DeepSeek ===== */
 const GROQ_KEY='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';
 const DEEPSEEK_KEY='sk-a988db3bc9d843ed9084dcefcd4cadee';
-const TOGETHER_KEY='key_CZ5bCobmSToChKWupkrA6';
+const TOGETHER_KEY='tgp_v1_cweqYhun_l8AqDZ-n8Or2PRYQxCCAtUTs_eovfnaOc4';
 // Gemini сохраняем только для Vision (фото задач)
 const GEMINI_KEY='AIzaSyDRcHUFNRl27LbLz0q3XNMuINt18ziY7Tc';
 
@@ -881,7 +881,7 @@ async function callGroqMixtral(prompt){
 
 /* --- Together AI (Qwen2.5-72B): третья перспектива --- */
 async function callTogether(prompt){
-  const r=await fetch(TOGETHER_URL,{
+  const r=await fetch('https://api.together.xyz/v1/chat/completions',{
     method:'POST',
     headers:{'Content-Type':'application/json','Authorization':'Bearer '+TOGETHER_KEY},
     body:JSON.stringify({
@@ -894,7 +894,7 @@ async function callTogether(prompt){
     })
   });
   const d=await r.json();
-  if(d.error) throw new Error('Together: '+d.error.message);
+  if(d.error) throw new Error('Together Qwen: '+d.error.message);
   return d.choices[0].message.content;
 }
 
@@ -989,7 +989,7 @@ async function dualAI(container, p1, p2, synthPrompt, imgBase64=null){
     const synthFull = `LLaMA (эксперт): ${r1}\n\nMixtral (педагог): ${r2}\n\nQwen (исследователь): ${r3}\n\nЗадача синтеза: ${synthPrompt.replace('{GEM}',r1).replace('{GRQ}',r2)}`;
     const fin = await callDeepSeek(synthFull+'\n\nСоздай ЛУЧШИЙ финальный ответ. На русском.');
     document.getElementById(`${container}-fin-b`).textContent = fin;
-    document.querySelector(`#${container} .debate-header .dh-title`).textContent = '✓ LLaMA + Mixtral + Qwen + DeepSeek завершили';
+    document.querySelector(`#${container} .debate-header .dh-title`).textContent = '✓ LLaMA-70B + LLaMA-8B + Qwen2.5-72B + DeepSeek завершили';
     document.querySelector(`#${container} .thinking-dots`).innerHTML = '<span style="font-size:.5rem;color:rgba(200,200,200,0.7);letter-spacing:.2em;font-family:JetBrains Mono,monospace">ГОТОВО</span>';
     return fin;
   } catch(e) {
