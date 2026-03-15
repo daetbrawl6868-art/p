@@ -1,0 +1,1509 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AktronPhs — Dual-AI Physics Platform</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,300;0,400;0,700;1,300;1,400&family=JetBrains+Mono:wght@300;400;500&family=Jost:wght@100;200;300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#030508;--bg2:#060b12;--panel:rgba(8,16,30,0.6);
+  --border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.12);
+  --w:#eef2ff;--w2:rgba(220,228,255,0.72);--w3:rgba(190,205,240,0.42);
+  --w4:rgba(160,178,220,0.22);--mono:#5a6a8a;
+  --gem:rgba(66,133,244,0.8);--gem2:rgba(66,133,244,0.2);
+  --grq:rgba(255,140,50,0.8);--grq2:rgba(255,140,50,0.15);
+  --fin:rgba(100,220,130,0.8);--fin2:rgba(100,220,130,0.12);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Jost',sans-serif;font-weight:200;background:var(--bg);color:var(--w);min-height:100vh;overflow-x:hidden}
+::selection{background:rgba(100,150,255,0.25);color:#fff}
+::-webkit-scrollbar{width:3px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.12);border-radius:2px}
+
+/* ===== COSMOS ===== */
+#sky{position:fixed;inset:0;z-index:0;pointer-events:none}
+.nbl{position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:radial-gradient(ellipse 100% 70% at 10% 20%,rgba(6,14,40,0.5) 0%,transparent 55%),
+  radial-gradient(ellipse 80% 90% at 90% 80%,rgba(20,5,45,0.35) 0%,transparent 50%),
+  radial-gradient(ellipse 120% 50% at 50% 100%,rgba(0,10,30,0.6) 0%,transparent 45%),
+  radial-gradient(ellipse 60% 60% at 80% 10%,rgba(5,20,60,0.3) 0%,transparent 50%);
+  animation:nb 50s ease-in-out infinite alternate}
+@keyframes nb{0%{transform:scale(1) translate(0,0)}33%{transform:scale(1.03) translate(6px,4px)}66%{transform:scale(1.02) translate(-4px,6px)}100%{transform:scale(1) translate(2px,-3px)}}
+.aurora{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:0.04;
+  background:linear-gradient(135deg,transparent 0%,rgba(50,100,200,0.3) 30%,transparent 50%,rgba(80,40,150,0.2) 70%,transparent 100%);
+  animation:aur 20s ease-in-out infinite alternate;background-size:200% 200%}
+@keyframes aur{0%{background-position:0% 0%;opacity:0.03}50%{background-position:100% 100%;opacity:0.06}100%{background-position:50% 50%;opacity:0.03}}
+
+/* ===== NAV ===== */
+nav{position:fixed;top:0;left:0;right:0;z-index:200;height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 36px;background:rgba(3,5,10,0.85);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-bottom:1px solid var(--border)}
+.nl{display:flex;align-items:center;gap:12px;text-decoration:none;flex-shrink:0}
+.nl-logo{width:30px;height:30px;border-radius:50%;overflow:hidden;border:1px solid rgba(255,255,255,0.15);display:flex;align-items:center;justify-content:center;background:#000}
+.nl-logo img{width:100%;height:100%;object-fit:cover;filter:grayscale(1) brightness(1.3)}
+.nl-name{font-family:'Playfair Display',serif;font-size:1.1rem;letter-spacing:0.15em;color:var(--w);font-weight:400}
+.nl-badge{font-family:'JetBrains Mono',monospace;font-size:0.44rem;letter-spacing:0.3em;color:var(--mono);text-transform:uppercase;background:rgba(66,133,244,0.1);border:1px solid rgba(66,133,244,0.2);border-radius:3px;padding:2px 6px;margin-left:4px}
+.nlinks{display:flex;gap:1px;list-style:none;overflow-x:auto}
+.nlinks a{display:block;padding:6px 12px;color:var(--w3);text-decoration:none;font-size:0.6rem;letter-spacing:0.16em;text-transform:uppercase;font-weight:300;border-radius:3px;transition:color .25s;white-space:nowrap}
+.nlinks a:hover{color:var(--w)}
+
+/* ===== HERO ===== */
+.hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:100px 30px 70px;position:relative;z-index:1}
+.hero-logo-wrap{margin-bottom:30px;opacity:0;animation:fu 1s .1s forwards}
+.hero-logo-wrap img{width:80px;height:80px;object-fit:cover;border-radius:50%;border:1px solid rgba(255,255,255,0.12);filter:grayscale(1) brightness(1.2);animation:lf 7s ease-in-out infinite}
+@keyframes lf{0%,100%{transform:translateY(0) rotate(-0.5deg)}50%{transform:translateY(-8px) rotate(0.5deg)}}
+.h-pre{font-family:'JetBrains Mono',monospace;font-size:0.56rem;letter-spacing:0.5em;color:var(--mono);text-transform:uppercase;margin-bottom:18px;opacity:0;animation:fu 1s .3s forwards}
+.h-title{font-family:'Playfair Display',serif;font-weight:300;font-size:clamp(2.5rem,7vw,5.8rem);line-height:0.95;color:var(--w);margin-bottom:6px;opacity:0;animation:fu 1s .5s forwards}
+.h-title em{font-style:italic;color:var(--w2)}
+.h-sub{font-family:'Jost',sans-serif;font-weight:200;font-size:clamp(0.82rem,1.6vw,1.1rem);color:var(--w3);letter-spacing:0.05em;margin-bottom:36px;opacity:0;animation:fu 1s .7s forwards}
+.dual-badge{display:inline-flex;align-items:center;gap:10px;padding:8px 20px;background:rgba(8,16,30,0.8);border:1px solid var(--border2);border-radius:100px;margin-bottom:40px;opacity:0;animation:fu 1s .9s forwards}
+.db-gem{width:8px;height:8px;border-radius:50%;background:var(--gem);box-shadow:0 0 8px var(--gem);animation:pulse 2s infinite}
+.db-grq{width:8px;height:8px;border-radius:50%;background:var(--grq);box-shadow:0 0 8px var(--grq);animation:pulse 2s .5s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.5;transform:scale(0.7)}}
+.dual-badge span{font-family:'JetBrains Mono',monospace;font-size:0.58rem;letter-spacing:0.2em;color:var(--w3)}
+.h-badges{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:36px;opacity:0;animation:fu 1s 1.1s forwards}
+.hb{padding:6px 14px;background:rgba(8,16,30,0.7);border:1px solid var(--border);border-radius:100px;font-size:0.62rem;letter-spacing:0.1em;color:var(--w3)}
+.h-cta{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;opacity:0;animation:fu 1s 1.3s forwards}
+@keyframes fu{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fi{from{opacity:0}to{opacity:1}}
+
+/* ===== BUTTONS ===== */
+.btn-p{padding:11px 28px;background:linear-gradient(135deg,rgba(255,255,255,0.1),rgba(255,255,255,0.03));border:1px solid rgba(255,255,255,0.2);color:var(--w);font-family:'Jost',sans-serif;font-weight:300;font-size:0.68rem;letter-spacing:0.22em;text-transform:uppercase;cursor:pointer;border-radius:3px;transition:all .3s;position:relative;overflow:hidden}
+.btn-p:hover{border-color:rgba(255,255,255,0.4);box-shadow:0 0 25px rgba(255,255,255,0.07)}
+.btn-s{padding:11px 28px;background:transparent;border:1px solid var(--border);color:var(--w3);font-family:'Jost',sans-serif;font-weight:300;font-size:0.68rem;letter-spacing:0.22em;text-transform:uppercase;cursor:pointer;border-radius:3px;transition:all .3s}
+.btn-s:hover{border-color:var(--border2);color:var(--w)}
+
+/* ===== LAYOUT ===== */
+.page{position:relative;z-index:1}
+section.sec{padding:80px 36px;max-width:1320px;margin:0 auto}
+.divr{height:1px;background:linear-gradient(90deg,transparent,var(--border),transparent);position:relative;z-index:1}
+.sh{text-align:center;margin-bottom:52px}
+.stag{font-family:'JetBrains Mono',monospace;font-size:0.55rem;letter-spacing:0.45em;color:var(--mono);text-transform:uppercase;margin-bottom:12px;display:block}
+.stitle{font-family:'Playfair Display',serif;font-weight:300;font-size:clamp(1.5rem,3vw,2.6rem);color:var(--w)}
+.stitle em{font-style:italic;color:var(--w2)}
+.sdesc{font-size:0.8rem;color:var(--w3);margin-top:10px;line-height:1.7;max-width:600px;margin-left:auto;margin-right:auto}
+
+/* ===== GLASS ===== */
+.gp{background:var(--panel);border:1px solid var(--border);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-radius:10px;position:relative;overflow:hidden}
+.gp::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.08),transparent)}
+
+/* ===== FORMS ===== */
+.fr{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:16px}
+.fg{display:flex;flex-direction:column;gap:6px}
+.fl{font-family:'JetBrains Mono',monospace;font-size:0.52rem;letter-spacing:0.28em;color:var(--w4);text-transform:uppercase}
+.fs,.fi,.fta{background:rgba(2,5,14,0.7);border:1px solid var(--border);color:var(--w);font-family:'Jost',sans-serif;font-weight:200;font-size:0.82rem;padding:10px 13px;border-radius:4px;outline:none;transition:border-color .25s;width:100%}
+.fs{-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='5'%3E%3Cpath d='M0 0l4 5 4-5z' fill='%235a6a8a'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 11px center;padding-right:28px;cursor:pointer}
+.fs option{background:#060b12}
+.fs:focus,.fi:focus,.fta:focus{border-color:rgba(255,255,255,0.2)}
+.fta{resize:vertical;min-height:90px;line-height:1.7}
+
+/* ===== GEN BUTTON ===== */
+.gbtn{width:100%;padding:13px;background:linear-gradient(135deg,rgba(255,255,255,0.08),rgba(255,255,255,0.02));border:1px solid rgba(255,255,255,0.18);color:var(--w);font-family:'Jost',sans-serif;font-weight:300;font-size:0.68rem;letter-spacing:0.25em;text-transform:uppercase;cursor:pointer;border-radius:4px;transition:all .3s;display:flex;align-items:center;justify-content:center;gap:9px}
+.gbtn:hover{border-color:rgba(255,255,255,0.35);box-shadow:0 0 30px rgba(255,255,255,0.06)}
+.gbtn:disabled{opacity:.35;cursor:not-allowed}
+.gbtn svg{width:13px;height:13px}
+
+/* ===== DUAL AI THINKING BOX ===== */
+.debate-wrap{margin-top:22px;display:none}
+.debate-wrap.show{display:block;animation:fi .4s ease}
+.debate-header{display:flex;align-items:center;gap:12px;margin-bottom:16px;padding:14px 18px;background:rgba(2,5,14,0.8);border:1px solid var(--border);border-radius:7px}
+.dh-title{font-family:'JetBrains Mono',monospace;font-size:0.58rem;letter-spacing:0.3em;color:var(--mono);text-transform:uppercase;flex:1}
+.thinking-dots{display:flex;gap:4px;align-items:center}
+.td{width:5px;height:5px;border-radius:50%;animation:td 1.4s ease-in-out infinite}
+.td:nth-child(1){background:var(--gem);animation-delay:0s}
+.td:nth-child(2){background:rgba(255,255,255,0.3);animation-delay:.2s}
+.td:nth-child(3){background:var(--grq);animation-delay:.4s}
+@keyframes td{0%,100%{opacity:.3;transform:scale(.7)}50%{opacity:1;transform:scale(1.1)}}
+.ai-step{padding:14px 18px;border-radius:6px;margin-bottom:10px;font-size:0.83rem;line-height:1.85;font-weight:200;display:none;animation:fi .5s ease}
+.ai-step.show{display:block}
+.ai-step.gem{background:rgba(66,133,244,0.06);border:1px solid rgba(66,133,244,0.18);border-left:2px solid var(--gem)}
+.ai-step.grq{background:rgba(255,140,50,0.05);border:1px solid rgba(255,140,50,0.15);border-left:2px solid var(--grq)}
+.ai-step.final{background:rgba(100,220,130,0.06);border:1px solid rgba(100,220,130,0.2);border-left:2px solid var(--fin)}
+.step-label{font-family:'JetBrains Mono',monospace;font-size:0.5rem;letter-spacing:0.3em;text-transform:uppercase;margin-bottom:8px;display:flex;align-items:center;gap:7px}
+.step-label .dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.gem .dot{background:var(--gem);box-shadow:0 0 8px var(--gem)}
+.grq .dot{background:var(--grq);box-shadow:0 0 8px var(--grq)}
+.final .dot{background:var(--fin);box-shadow:0 0 8px var(--fin)}
+.gem .step-label{color:rgba(66,133,244,0.8)}
+.grq .step-label{color:rgba(255,140,50,0.8)}
+.final .step-label{color:rgba(100,220,130,0.8)}
+.step-body{color:var(--w);white-space:pre-wrap}
+.lb{height:2px;background:linear-gradient(90deg,transparent,var(--gem),rgba(255,255,255,0.3),var(--grq),transparent);background-size:200% 100%;animation:ls 1.2s linear infinite;border-radius:1px;margin-bottom:14px;display:none}
+.lb.on{display:block}
+@keyframes ls{0%{background-position:200% 0}100%{background-position:-200% 0}}
+
+/* ===== TABS ===== */
+.tw{display:flex;gap:2px;background:rgba(2,5,14,0.7);border:1px solid var(--border);border-radius:7px;padding:3px;width:fit-content;flex-wrap:wrap;margin-bottom:22px}
+.tb{padding:8px 16px;background:transparent;border:1px solid transparent;color:var(--w4);font-family:'Jost',sans-serif;font-weight:300;font-size:0.62rem;letter-spacing:0.15em;text-transform:uppercase;cursor:pointer;border-radius:4px;transition:all .2s;display:flex;align-items:center;gap:6px;white-space:nowrap}
+.tb svg{width:11px;height:11px}
+.tb:hover{color:var(--w3)}
+.tb.act{color:var(--w);background:rgba(255,255,255,0.07);border-color:var(--border)}
+.tc{display:none}.tc.act{display:block;animation:fi .35s ease}
+
+/* ===== TEST ===== */
+.to{display:flex;align-items:flex-start;gap:11px;padding:12px 15px;background:rgba(2,5,14,0.6);border:1px solid var(--border);border-radius:5px;margin-bottom:8px;cursor:pointer;transition:all .2s}
+.to:hover{border-color:var(--border2);background:rgba(255,255,255,0.03)}
+.to.sel{border-color:rgba(255,255,255,0.3);background:rgba(255,255,255,0.05)}
+.to.cor{border-color:rgba(100,220,130,0.5);background:rgba(100,220,130,0.06)}
+.to.wrg{border-color:rgba(220,80,80,0.4);background:rgba(220,80,80,0.04)}
+.ol{width:22px;height:22px;border:1px solid var(--border);border-radius:3px;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:0.58rem;color:var(--w4);flex-shrink:0;transition:all .2s}
+.to.sel .ol{border-color:rgba(255,255,255,0.4);color:var(--w)}
+.to.cor .ol{border-color:rgba(100,220,130,0.7);color:rgba(100,220,130,0.9)}
+.to.wrg .ol{border-color:rgba(220,80,80,0.6);color:rgba(220,80,80,0.8)}
+.pt{height:2px;background:rgba(255,255,255,0.06);border-radius:1px;overflow:hidden;margin-bottom:6px}
+.pf{height:100%;background:linear-gradient(90deg,rgba(255,255,255,0.3),rgba(255,255,255,0.6));border-radius:1px;transition:width .4s ease}
+.afb{padding:11px 15px;border-radius:5px;margin-top:12px;font-size:0.82rem;font-weight:200;display:none;line-height:1.7}
+.afb.show{display:block;animation:fi .3s ease}
+.afb.c{background:rgba(100,220,130,0.07);border:1px solid rgba(100,220,130,0.25);color:#80e8a0}
+.afb.w{background:rgba(220,80,80,0.06);border:1px solid rgba(220,80,80,0.2);color:#e08080}
+.rscore{font-family:'Playfair Display',serif;font-size:3rem;font-weight:300;color:var(--w);line-height:1;margin-bottom:7px}
+.rlbl{font-size:0.68rem;letter-spacing:0.2em;color:var(--w3);text-transform:uppercase}
+.rsum{padding:28px;background:rgba(255,255,255,0.03);border:1px solid var(--border2);border-radius:9px;text-align:center;margin-top:20px}
+
+/* ===== FORMULA GRID ===== */
+.fg2{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:13px}
+.fc{padding:22px;background:var(--panel);border:1px solid var(--border);border-radius:8px;cursor:pointer;transition:all .25s;position:relative;overflow:hidden}
+.fc::after{content:'';position:absolute;inset:-1px;border-radius:9px;background:linear-gradient(135deg,rgba(255,255,255,0.05),transparent);opacity:0;transition:opacity .25s;pointer-events:none}
+.fc:hover{transform:translateY(-2px);box-shadow:0 12px 40px rgba(0,0,10,0.5)}
+.fc:hover::after{opacity:1}
+.fsym{font-family:'Playfair Display',serif;font-style:italic;font-size:1.7rem;color:var(--w2);margin-bottom:8px;display:block;line-height:1.2}
+.fn{font-size:0.84rem;font-weight:300;color:var(--w);margin-bottom:4px}
+.fd{font-size:0.72rem;color:var(--w3);line-height:1.55}
+.ftag{display:inline-block;padding:3px 8px;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:100px;font-size:0.55rem;color:var(--w4);margin-top:10px;letter-spacing:0.08em}
+
+/* ===== MODAL ===== */
+.mo{position:fixed;inset:0;background:rgba(0,0,8,0.9);backdrop-filter:blur(16px);z-index:300;display:none;align-items:center;justify-content:center;padding:16px}
+.mo.open{display:flex;animation:fi .25s ease}
+.mod{max-width:700px;width:100%;max-height:90vh;overflow-y:auto;padding:34px;background:rgba(5,10,22,0.98);border:1px solid var(--border2);border-radius:12px;position:relative}
+.mod::-webkit-scrollbar{width:3px}
+.mod::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.1)}
+.mc{position:absolute;top:16px;right:16px;width:28px;height:28px;background:rgba(255,255,255,0.06);border:1px solid var(--border);border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--w3);transition:all .2s;font-size:0.9rem}
+.mc:hover{background:rgba(255,255,255,0.12)}
+
+/* ===== CHAT ===== */
+.chat-m{height:400px;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:12px;background:rgba(2,5,14,0.6);border:1px solid var(--border);border-radius:7px;margin-bottom:12px}
+.chat-m::-webkit-scrollbar{width:3px}
+.chat-m::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.08)}
+.msg{display:flex;gap:9px;animation:fu .3s ease}
+.msg.u{flex-direction:row-reverse}
+.mav{width:28px;height:28px;border-radius:50%;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;background:rgba(2,5,14,0.9)}
+.mav svg{width:13px;height:13px}
+.mb{max-width:78%;padding:11px 15px;border-radius:8px;font-size:0.83rem;line-height:1.75;font-weight:200}
+.msg.ai .mb{background:rgba(8,16,30,0.8);border:1px solid var(--border);color:var(--w);border-radius:3px 8px 8px 8px}
+.msg.u .mb{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:var(--w);border-radius:8px 3px 8px 8px}
+.cir{display:flex;gap:10px}
+.ci{flex:1;background:rgba(2,5,14,0.7);border:1px solid var(--border);color:var(--w);font-family:'Jost',sans-serif;font-weight:200;font-size:0.83rem;padding:12px 14px;border-radius:5px;outline:none;transition:border-color .25s}
+.ci:focus{border-color:var(--border2)}
+.cs{width:44px;height:44px;background:rgba(255,255,255,0.06);border:1px solid var(--border);border-radius:5px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--w3);transition:all .2s;flex-shrink:0}
+.cs:hover{background:rgba(255,255,255,0.12)}
+.cs svg{width:15px;height:15px}
+.qchips{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.qc{padding:6px 12px;background:rgba(2,5,14,0.7);border:1px solid var(--border);border-radius:4px;cursor:pointer;font-size:0.67rem;color:var(--w3);font-weight:300;transition:all .18s}
+.qc:hover{border-color:var(--border2);color:var(--w)}
+
+/* ===== DOWNLOAD ===== */
+.dl-box{padding:18px 22px;background:rgba(2,5,14,0.7);border:1px solid var(--border);border-radius:7px;display:flex;align-items:center;justify-content:space-between;gap:14px;margin-top:14px;flex-wrap:wrap}
+.dl-info{font-size:0.8rem;color:var(--w3);line-height:1.55}
+.dl-info strong{color:var(--w);font-weight:300;display:block;margin-bottom:2px}
+.dl-btns{display:flex;gap:7px;flex-wrap:wrap;flex-shrink:0}
+.dl-btn{padding:8px 16px;background:rgba(255,255,255,0.05);border:1px solid var(--border);color:var(--w2);font-family:'Jost',sans-serif;font-weight:300;font-size:0.62rem;letter-spacing:0.16em;text-transform:uppercase;cursor:pointer;border-radius:3px;transition:all .22s;display:flex;align-items:center;gap:6px;white-space:nowrap}
+.dl-btn:hover{background:rgba(255,255,255,0.1);border-color:var(--border2)}
+.dl-btn svg{width:12px;height:12px}
+
+/* ===== VISION UPLOAD ===== */
+.upload-zone{border:1px dashed rgba(255,255,255,0.15);border-radius:8px;padding:32px;text-align:center;cursor:pointer;transition:all .25s;position:relative}
+.upload-zone:hover{border-color:rgba(255,255,255,0.3);background:rgba(255,255,255,0.02)}
+.upload-zone.dragover{border-color:rgba(66,133,244,0.5);background:rgba(66,133,244,0.04)}
+.upload-zone input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.uz-icon{width:36px;height:36px;margin:0 auto 12px;opacity:0.4}
+.uz-text{font-size:0.8rem;color:var(--w3);line-height:1.6}
+.uz-sub{font-size:0.68rem;color:var(--w4);margin-top:4px}
+.preview-img{max-width:100%;max-height:240px;border-radius:6px;border:1px solid var(--border);margin-top:14px;display:none}
+
+/* ===== STATS ===== */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:12px;margin-bottom:36px}
+.stat{padding:20px 16px;background:var(--panel);border:1px solid var(--border);border-radius:8px;text-align:center}
+.stat-n{font-family:'Playfair Display',serif;font-size:1.9rem;font-weight:300;color:var(--w2);line-height:1}
+.stat-l{font-size:0.58rem;letter-spacing:0.16em;color:var(--w4);text-transform:uppercase;margin-top:4px}
+
+/* ===== TOPIC CHIP ===== */
+.tc2{padding:7px 12px;background:rgba(2,5,14,0.7);border:1px solid var(--border);border-radius:4px;cursor:pointer;font-size:0.68rem;color:var(--w3);font-weight:300;transition:all .18s}
+.tc2:hover{border-color:var(--border2);color:var(--w)}
+.tc2.on{border-color:rgba(255,255,255,0.25);background:rgba(255,255,255,0.06);color:var(--w)}
+
+/* ===== PROGRESS ===== */
+.prog-status{font-family:'JetBrains Mono',monospace;font-size:0.55rem;letter-spacing:0.2em;color:var(--mono);margin-bottom:8px;height:16px}
+
+/* ===== FOOTER ===== */
+footer{padding:50px 36px;text-align:center;border-top:1px solid var(--border);background:rgba(2,5,10,0.8);position:relative;z-index:1}
+.fl2{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:14px}
+.fl2 img{width:24px;height:24px;border-radius:50%;object-fit:cover;filter:grayscale(1) brightness(1.2)}
+.fl2 span{font-family:'Playfair Display',serif;font-size:1rem;letter-spacing:0.18em;color:var(--w3)}
+.ft{font-size:0.62rem;color:var(--w4);letter-spacing:0.08em;line-height:1.8}
+.dual-indicator{display:inline-flex;align-items:center;gap:8px;margin-top:12px;padding:6px 14px;border:1px solid var(--border);border-radius:100px}
+.di-gem{width:6px;height:6px;border-radius:50%;background:var(--gem)}
+.di-grq{width:6px;height:6px;border-radius:50%;background:var(--grq)}
+
+/* ===== SCROLL HINT ===== */
+.sh2{position:absolute;bottom:30px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:5px;opacity:0;animation:fu 1s 2s forwards}
+.sline{width:1px;height:34px;background:linear-gradient(to bottom,transparent,rgba(255,255,255,0.25));animation:sp 2.5s ease-in-out infinite}
+@keyframes sp{0%,100%{opacity:.2;transform:scaleY(.7)}50%{opacity:.7;transform:scaleY(1)}}
+
+/* ===== RESPONSIVE ===== */
+@media(max-width:768px){nav{padding:0 16px}.nlinks{display:none}section.sec{padding:55px 16px}.hero{padding:90px 16px 60px}.mod{padding:20px}.tw{width:100%}.tb{font-size:.58rem;padding:7px 10px}}
+
+/* ===== VISION SECTION ===== */
+.vision-result{margin-top:18px;display:none}
+.vision-result.show{display:block;animation:fi .5s ease}
+.tk{padding:20px 22px;background:rgba(2,5,14,0.65);border:1px solid var(--border);border-left:2px solid rgba(255,255,255,0.2);border-radius:7px;margin-bottom:12px}
+.tk-n{font-family:'JetBrains Mono',monospace;font-size:0.52rem;letter-spacing:0.3em;color:var(--mono);margin-bottom:8px}
+.tk-t{font-size:0.88rem;line-height:1.85;font-weight:200;color:var(--w)}
+
+/* ===== TOOLTIPS/EXTRAS ===== */
+.badge-ai{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:100px;font-family:'JetBrains Mono',monospace;font-size:0.5rem;letter-spacing:0.15em}
+.badge-ai.g{background:var(--gem2);border:1px solid rgba(66,133,244,0.25);color:rgba(66,133,244,0.9)}
+.badge-ai.o{background:var(--grq2);border:1px solid rgba(255,140,50,0.25);color:rgba(255,140,50,0.9)}
+.badge-ai.f{background:var(--fin2);border:1px solid rgba(100,220,130,0.25);color:rgba(100,220,130,0.9)}
+</style>
+</head>
+<body>
+<canvas id="sky"></canvas>
+<div class="nbl"></div>
+<div class="aurora"></div>
+<div class="page">
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nl">
+    <div class="nl-logo"><img src="data:image/jpeg;base64,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EAQc04408oc8884Ec8kAAAAQIEAAAAMIIAAEIAAo08s888888888cokcw08cMUkAocM0888888w84o4AMMIA4AgEM8ww4A80Qg08Y08888888888888cIEU8840Mw04UM8884k08o4kU8wgAgAAUwgwAAQQAAAwkEwI4088888888888sY448gU84wA0M884M0wAYg84gAAAAAAwgAAAAAQAAAAAkcsIUgY08s0888wk88s84YgU40MQA4gMgAAcEsAAAAAAMAAAAAEoAAAEAAAEMEY08888888888M8888McUQ4s8IQQ0Y4AM08cgAAAEAAcAAAEc8oAA0gEsEc8U4Iww088888888888888o808888M8s8Y0s8IgAMcQAAkAAEwwwAEwwEAgQwgAgUkoA888888888888888oQ88888888884w4AQwwwAAAAQwAAAAAAAQAAAAAAQkgs88s400884w88888sMoM088ww0088s4gQggAAAAAAUAAIAMIIUAAAAAAIAAQQ008c8888sc888888QAMc84QQc88AckAAAAAAMMskEAEs80o4csIAEM8IEAcYEkM888888888888ssoQI88cMc84c88YAAEMsYA0EAcU8gAAU8gAAc4wgAsc80888888888888888k0oI488884MYsogIc8oAAAAAEEwAAAAAAAAAAAAAAAAAM884088880888408UcoUMYwsAAQwAAAwwAAAAAAAAAAAAAAAQEAAAAAAEAAAAw8s8888cc888s08IcIMEY8UAAAAAAEAAAAAEIcsAAAMs0oAEcIAMM8oAAMMQEc0888888888888oA88oIEEMc8sUMIAAEMMAU0gQEE4AQAs8AQ088gAAs84AAEc0888888888888M884gEc8woQcwAAcU8gAEAAAAQAQAAAAAgAQAAAAQAAAAwaA0888w0888888sc88MYAAAAAAAAAwAAAAAEIAAAAAAAAAAAAAAAIMAAAEUM4c888ME888k888848c88gkAAEAAAAAAAAEAcEgAAMMoUQEAAEAMM8AA8YMc888888888888888888888sM0AAQEIAAAEMAA4gAAU84wAgk4gAU88EIM4k8888888888888888888888888okAUwgAUY80wAgAQ0wwwAAwgMIEU0QQIcc888888888888888808888088888soIEAcQwgAAAAAQgAAAAAAAEA8QAcc88EEc88Ic888AE888gE8884E888occ88AEIAgAAAAAAEAAAAMUYIwccMc8888888888888888888s88888c8888c888okYsAAAEEMI0kAEc400c88888888888888888888888888888ww8888888888Y8gAAM8wAAQAAgsM88888888884888888kY480888880wk0QgEMg888888888gAAUwwAAAAAAk8oo888A48QcgM888U4Y4AQQwgQAwAgQAAAAAAAw48wAo88cAQQQAAAEAAAEIQE084sYc8888Yc88sIwEEIIMAAAAAEIAAIAAMAEAEoE884AAEgAAAAAE8UAAA48AIM888884g888coAEIc4oAIU8gYAc8AAU844AAMQ00okckAAc88wAAAAU8g0Y88884wEcc88owAAAQwgAA044QwgwwAQQwgAAcwwg088wgU84wgAgAAEAwAAgQMMUo8MwAcQgAAgAAAAAgQAAAAAAAAggAAAAQAAUY8kAAAQAAAAgMEAAAAAAAAAgk080AcAAAAAAAAIAAAAAAAAAAAAAAAIAAAAAwokUcIAAAAIEcMAAEMU4AAsoQgUssgAAM8AAA8MgAAMM4AAMMQAMcc8AAEMcU4U88EAcM8cgwAAEU8gAgU4oAAE0gAAc8oAgc0gAAM00gAM88gU88wgAU8wgkk8g0A888wAAAAQEgAQAAAAgAgAAAAAwAwgAAAAAAAAAAAgAQEAAAAAAQgAAAAAAQcAgAAAA/8QAFBEBAAAAAAAAAAAAAAAAAAAAsP/aAAgBAwEBPxAsj//EABQRAQAAAAAAAAAAAAAAAAAAALD/2gAIAQIBAT8QLI//xAAsEAEAAQIEBAcBAQEBAQEAAAABEQAhMUFRYXGBkaEQIDBAULHB8NHhYPFw/9oACAEBAAE/EP8A8QTxaKAhBvejLUQiQjp6J8G/+EPPg6ITVFflKZwqxvrm34+2lDBgcf8AxR6h6aQGBrzoT28mRMRp2pSvfitTue1hNFoIYP47LTl2XYiMJ789keSfeT4T6E+VyYFHAHtNROooHEA6rJHJKHVXAwZbxyTJ9pitqLoICHC5i3E3+CnyPzRjZvQ3JyER3D4BAHYmzeGpmUpqEdBkHMfZjqPsUJcj+43om1XMFlwP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" alt="AktronPhs"></div>
+    <div>
+      <div style="display:flex;align-items:center;gap:6px">
+        <span class="nl-name">AktronPhs</span>
+        <span class="nl-badge">Dual-AI</span>
+      </div>
+    </div>
+  </a>
+  <ul class="nlinks">
+    <li><a href="#" onclick="go('vision')">Фото задачи</a></li>
+    <li><a href="#" onclick="go('tasks')">Задания</a></li>
+    <li><a href="#" onclick="go('tests')">Тесты</a></li>
+    <li><a href="#" onclick="go('explain')">Объяснение</a></li>
+    <li><a href="#" onclick="go('formulas')">Формулы</a></li>
+    <li><a href="#" onclick="go('laws')">Законы</a></li>
+    <li><a href="#" onclick="go('calc')">Калькулятор</a></li>
+    <li><a href="#" onclick="go('chat')">ИИ-Чат</a></li>
+    <li><a href="#" onclick="go('teacher')">Учителю</a></li>
+    <li><a href="#" onclick="go('debate')">Дебаты ИИ</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-logo-wrap">
+    <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAkGBwgHBgkIBwgKCgkLDRYPDQwMDRsUFRAWIB0iIiAdHx8kKDQsJCYxJx8fLT0tMTU3Ojo6Iys/RD84QzQ5Ojf/2wBDAQoKCg0MDRoPDxo3JR8lNzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzf/wgARCALfA7oDASIAAhEBAxEB/8QAGwABAAIDAQEAAAAAAAAAAAAAAAYHAwQFAQL/xAAVAQEBAAAAAAAAAAAAAAAAAAAAAf/aAAwDAQACEAMQAAABgwAAAAAAAAAAADoaB4AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACT7PLtIpF2+IAAAAAAAAAPfJMRl9/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABuXJR9xmap7g5xT7Z1gAAAAAAABOIPNzFDbrqE0gAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAALErvtlrA49W3VxypmfAAAAAAAAJXFO2WtHpCKP8mEPAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAALa69Y2cAcer7o5hULd0gAAAAABkxi7MvA758VXa+kU229QAAAAAAAAAAAAAAAAAAN3pkfSrIRFKtUj7oaJ8gAAAAAAAAAAAAAAAAAAAAAAffxNyEWfWW4XGwZwDTrG2sRSaURcAAAAAHYOlY9I3CboOTVd1cIqtkxgAAAAAAAAAAAAAD3zbNTfm8pIZJOiPPQAeejzX2RG43ZApLHc0LIayYwAAAAAAAAAAAAAAAAAAABYldyM79e3jDDi2ZSE0J4ABEZcKR+Larc5oAAAFoVfaRW0jk1Yl2uH3ACOVpd0dKwZMYAAAAAAAAAAAAJWaVkbH2AAAAAAAAcut7cxlJJLGgAAAAAAAAAAAAAAAAAABkxi6s8Ql5E69u7jHLltNzQmAAGHMK3i14RorRt6gAAncE7Za0XlAp22OHFyznz9AHArO6+UVG3tEAAAAAAAAAAHSOpZWPKAAAAAAAAAAfNaWbhKUdHnAAAAAAAAAAAAAAAAAAAG7b1KTcnQNWvLN8ILOY7xCfsOYAA1a9swUcs2vzSA98Fxb8EnY4fcEEnWlxyTPPQDUrG2cZSSVRUAAAAAAAAA9teIWQAAAAAAAAAAAAcSqrwrUjAAAAAAAAAAAAAAAAAAAH38C1+1TVrm8BgziLdnoYDO89AAGDOK9iV38wqF3+AZrcp3tFrseQY8g0N8AAPInLRSWO2q3OaAAAAAAB9fMlJ30QAAAAAAAAAAAAcfseFHt/QAAAAAAAAAAAAAAAAAAGzrdA0N6b18W7v0zZp2QAAAAAAeRuSimtO6ocRqwaxwl4K2nRvgAAAY8grmKXjGis21qgAAAAHtoVrc59gAAAAAAAAAAAAAriK2FXoAAAAAAAAAAAAAAAAAABaO5XlrlRc664kYpnTu2Wy5nTAAAAAAANODWKKQ9tuEmabU79l2IHMjaAAABq11Z/hR6xIGa4AAAJDaEIm4cvjEtcrqHoAAAAAAAAAAAOFVdv1CeAAAAAAAAAAAAAAAAAAAWJXecupo7xji0tFS96d8g6WaD9AlDFlAAAAAAAOVB7NFH5bTg50ZjTv0Xcr2bG4AABqbYrONXhHyr3Q54APSzpFzOmQCGymLDo84WHLKQ7harT3AAAAAAAAAADSpy4qcAAAAAAAAAAAAAAAAAAAAOratK9stZhzAD4+xzeh9AAAAAAAAB56ORCrMFH/AHbMLPuZVH4XgrSanWAABjhM6FJY7ggJHfXhdGziylaxiZQ0Ae+DftSnOqW4x5AAAAAAAx4jZYcwByKlsutAAAAAAAAAAAAAAAAAAAAADr2XTuwXSi8nPQAAAAAAAAAAAAc6FWMKR+bghRqzeqfkvBWs7N8AD4+/CkfnLiLqz6W6RitbqpswvfAACezSmbjPsAAA5x0OLBuES3haHh9fIe7ml9FsdfT3CCwiRxwAAAAAAAAAAAAAAAAAAAAffwJ9F+jZJR/dncZJX1Ke6RZ7gd49AAAAAAAAAAAABzoBaAo7JZUAJTNqR7JbDS3QCmtPs8YtnsRqSivbC1SmGzrAAHto1bNydAAHFMNa/GMAAAd3h2sdnz64hWWsAAAAAAAAAAAAAAAAAAAAACfQH0vBFZUec3piG6k9EN6/a0za++f0AAAAAAAAAAAABgzitYxeENIZZ9TbBdDl9QriLT+AE6m1Z2YAcCsLu4JVjZ1gBK4pKSyAAYKik0MAAAB2Dr2FjyCup5ThiAAAAAAAAAAAAAAAAAAAAAAB7NoQLw9qqwjpgAAAAAAAAAAAAAAAAhsAvCvyPWzS8nJfVN10ubNyUfcRvgA04FZIpD5uSOlfS3BIiUAa+xFivMQAAGWZnBs7N9g1CIwfPgAAAAAAAAAAAAAAAAAAAAAAAAH10ZIaU1rnll2KvlBKGvsAAAAAAAAAAAAAADHkFQ8206sLTgux1SEWLXchLPAAAAAAisqFQaV2fJSea5PsqqQTYae4ACuZNV54AAAAAAAAAAAAAAAAAAAAAAAABNIX6Xhig88OPy5aILtTAcTsfYAAAAAAAAAAAAAA8qq1ooV3Z9XWQVxk3OeXTniUtAAAAAAAAAAGvnrM5OiAAAAAAAAAAAAAAAAAAAAAAAAAACQR8XNt0xPSVPPQAAAAAAAAAAAAAABp7nyUjMIz1DtQe4afOtbNHWudoABxtQkjR3gAAAAARo5kG98AAAAAAAAAAAAAAAAAAAAAAAAAAAAAOxN6xF3+1DKiaNLdAAAAAAAAAAAAAHnvhU/xu6Bb1ZWbxyp5LGvS73M6YBrV1ZwpDdseMGv0eL9Ev7kHlB1gADjnzVn3gAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJj0IjbxW+jawp/o2eIZI+gAAAAAAAAAAAAAK25fc4ZboKvj1t1MSGzqOtEkAAHnoAAAHAMtX+YQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABa1UyMs4AAAAAAAAAAAAAAAEGjE3gJc4FeWHgKW3/nSLpz1nZZ6AAAB5igB16/8AgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPfBbPYqO2T7AAAAAAAAAAAAAAByamuyli6vrQ3wDiVXd8UK5lsT8Lv+qmnR33x9hi4BJODCuEdDnAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAmcM9LwRaUgAAAAAAAAAAAAACrrRiBuSOBzwAAjFcXdUJzAZdjSGTGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAH1PYALxVtYBsgAAAAAAAAAAAAa+wKrtSBy03wAK7sTiFUgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAbGuJ5LaWyl2K+nZmAAAAAAAAAAABrxyV8U7TBnAHnoqzg3VASJvfAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAdU5cjl/ejm9IoAAAAAAAAAAAADV2gAAAi9eXXzSoHT5gAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAydKxyOzP7AAAAAAAAAAAAAAAAAAAAGCt7P+SkEuiIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMpjlvalJjyAAAAAAAAAAAAAAAAAAAAAAAgc88KPTeEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABl7xxLO2+gAAAAAAAAAAAAAAAAAAAAAAAAAeQGf+FHpRFwAAAAAAAAAAAAAAAAAAAAAAAAAAA96RzEw7hWvWs7bIP3e2MeQAAAAAAAAAAAAAAAAAAAAAAAAAAAMVVW1zin2XEAAAAAAAAAAAAAAAAAAAAAADZNZI+6QDdtLoFc96UjT2/QAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABC4Fd1SnLAAAAAAAAAAAAAAAAAAMhjdzukGy2f2Csu9M/Tk9P7AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACOyLwo91eUAAAAAAAAAAAAAD6Pl1e2Q/wCrL7RV3cn4j3bzAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACEwS3ajPAAAAAAAAAAAAdTufNhkY7u0AAAAAAAAAAAAAAAAAADyviwlOdgstC+ud1qbR6AAAAAAeHrT5BI0A4ZafJq/4J9z4iJL8xwSXYiQnnWq0XXmpPvlmo5IT6AAAAAAB80tdVTHIAAAAAAAAAAAAlcUF2ZafnxInnoAAAAAeYzK4GkSrl6fcNXe+gAAAAAAA+fK6PqKAAB7tag7u9FBONyuxZ2eqhbHlUC0tetRP9GHCQcrUHvgAAAAAAAOhzxYkqpHplvOD3T0AAAACqrUqc44AAAAAAAAAAAAAOrKoALf6NIZS61P5i2lSYi39Wn8RZ/FjsuI7uT3YON2PQAAAAY8gAAAxfNYGWPgAAAAAAAAAAAAAAAAAAAAB7K4mLrzU/Zh1AAAAfFL2PWQAAAAAAAAAAAAAAAAfXdOBmsCSEBlfaHnoAAAAGKKEl5+tJDHkAABqfFXGTkgAAAAAAAAAAAAAAAAAAAAAAAy4hZ0jpCxCVgAAq+PTiDgAAAAAAAAAAAAAACZQ3MW7vQmYmUAAAABpRYmcVh0sONOt/6AAAHK1qzM2kAAAAAAAAAAAAAAAAAAAAAAAAAD3wWNK6QtA74AI3WVuVGAAAAAAAAAAAAAAAAM+ASqQVqLk3KPyl2KY+S5eZU/yT+O8LdNTvymTGjvgAAPg+4pzYYfXwAAAAAAAAAAAAAAAAAAAAAAAAAAADZ1hcu5VtpAGjTluVGAAAAAAAAAAAAAAAAAAAAMuWzSOTfMAAB4euPECa13xvkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAWLXW4XKxZSOVjM4YAAAAAAAAAAAAAAAAAAAAPfB0OrGhNc8DE9wQkSfi6QAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAsWUVVJyHaIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPv4AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAH//xAAwEAACAgIABAYBBAIDAAMAAAADBAIFAAESIEBQBhARExQwYBUhMTQjJCIyMzVwgP/aAAgBAQABBQL/AOkFFZtb3+35v4e36PXqPty/NqXfpZTjqcbNGSZekqVYtinHcJfj6c/baw4YHE8rNQ/R+Gs8QKcM/wAgSJ7qmPKQcAwGa5ei8Nf9jCiYTi8lT/j/AIePxL+VijBwZhTATofDs/RzLhL5QPx+oY+O752KEHBmFMJOgp58Fh5XiHty/H6tj5KfnYowcGcM1yffCW4THLUx5KOpxs0tpm/HqVv47PI8mNwbSxFS/fSG91DybXg0FleaxuyjVOXI07ks1RM5+gnzdEzk6dyOESZHm9b13CUdx3lM78kHIyuNkdggROf3UDHts+dglFwRhTCTsK6Z2drUWsCksH6CAEXR6ZUmMUrA8nCQ5ds0lp6r3rcdpsyVYCWJh8hIRJCyqpA39jSntLQluEkzaYX87Ovi4OcJQl1y65GJpUwhZrWo6+w64mIuUko5OMoS7V4dNxL3FZ73lTv/ABSa/fmtKnRclHcJfUoGLVOwGa5qFz2zclrXaajKO4S6yurSN7XANcfQOohbi6gZOXaaI3tvZb1fH5Uljw879eJyLiRlJ/TRy4q61Q04LepDnVO/MByWlbFuM4SHLqqmr2fIx1HXRThEkbSskrvtA57HME9FFlpU6PkoyhKns/e1zFHAsLGomD6fDhf+OW9b8mKpyJsLGiwHks66LcSimGfUU9f8metemuklrUtW1d8WfaPD7PGHyfrxOQZWKoSptfd+h+oEfGFyLk5qc3sv+VpVxaysbkgxrfrrkeRG4NpYqpOmQVk2wIcRD6Yo4lG8rJQ/Z1GJKsCJEo/JgA2Bv1JVsq7b0zW/XnOAbEH6kq3Oif5CvlZV0HI1zhES8rK42RvoFTl0mteu6tT4i3UWqnylv47R4fc9OV+pExizbNZMRIFhzv1ImMZVMtLk8Os+m/NtUTY1plQlyzhEkbKpkDpKJT3j9Veq+yz2eMtxlWO6cDyFFA0PgnRku1A30FFAsHqaQ83rcd+QiSERJmLYPOcIkgAUl+ezqdGycJDl0EdbltBfSq3VWoPkJdoVYmqZRobQeWYYT39LaIGtO1R1vOrd+GeE4kh9b6AnIuJGUl99Gv7zfWPB9hrswQTPvE2iKFTaG2LoH6kTGMLFWniTxk5I2YGvsJCJI2NRMH30gPZS6zxCPhb7Mif4zVnVRZwkJDmswRYlfYCch0BRQNBykwophnidyYOLNhZj9b9SJjGFyrz+sMNlNCOox6zxHD1W7PSMe+m6iJyDqJlJRluG6651vNb1vXQMLCYg7SkFm9bjuMpQ2ndkhizQWY/UwAbA7GrIr9dGL3H+tuo8Vd2eqb+K1ko6npykHPGFTLSRsTKbTeC3HoWkQNY5TGFm9b1sc5DkpeS1gDiPD6n6aBcMEgJ/R4bH+2PuwSHC9BvA2Kpuqso8SPaKN73YeUo6npukETDJNJyRu96wRIFh0LaAGscqDg8hlmKSl5OOLtgZ19LC4mIP1JV/ooYcKGeJJf5fJZ1hbad2Mma3reumd/qdoAWQCqMwaDyMVqp83WNqSDaShuE4kj0Ldcu1jdSwv5QlKElLskMXZCxH6XakLONJmVly1seFHPEO/wDd5ELEqm1WRtD6V7+n2mvcmmUJYHHyyjqWtJjhLX8dE3XrtY5TnBm9emQnKElLsw8VeXZ+mcIki/S5OEoS81tei+eIf73Ko0RQqjMGg9Jay4a/tVa/JMgiQMPq2kF2sbpTCyUdx3rfpilycOKWC7X0tpBai7UmX8xf+WeJIf5eauckmeEtTj9u5x1nvhzRR75PEEuFHtaD5E5qNibh1jSQGtN0pR5KO47xO3YXxOxXa+iX/WX84D/xy/Fxpc/h9rij9TNosvh7w8sK4yXN73vzEycWVZiHTzxJP9+2AMQBELgZ+uZTA1FukKPJR3Hf8YncGDirYWo8u/4Jr0niW+JTDj0YJYbGTmVNsB4y1KPO44JSDlmdnfNr99qC9lbL0nG92qO9x3+nr2C7dewrvErQ6uKPga11raQWtPVRlvKE5DkhdZGWpa5HNcLWVMuKv8r9XgNz0hvdR5rOyipEpZmnz06/vuZLfDpgnun7XSO/HNjFYqfGKImsKoyvtW3ZBi1ssfPX1616pCzjShlZ4hYFTkqyJofnbw4LHKCXqj5MgiwBgM1zc3huf78tm7pMM5yJPn/nKpT4quXBvZR7bTWXHyMILMaLQjzSFkrkbF0GBtFC5GWpa6owoGHY1M1vJZgixUHhuQ8vEI+FzPDc/wBvO1Q02OUdwly+Hd/7fIYsQibYk0f6KJH3J+XiBjjY7brfpuqtNH5yKrlwSYg76yzqNSzevTAGmuVByDgc8Rj/AMOUJOB7ksa0bejhmAnJ4e/u8niBr1n9FajJwo4RHDGC6AEs9kJ2+suPTNfv2S4rePyTamoZc0TiuB+5X4mT2muVlYTMHKYws3ret+Xh3X+z5nLoISz2UnPX15HJADAA/LxC13JGzMpijwWo9ju6/wBveUjvsGLHRBzjwyxEnuqcx1QMYaiFvCUjUcpUyqx8/EBeBTmhCRJIUuRjqEfJo0VwGJIxe5RluO07owsVeA1rsM46nGwV2oxlQz8lS4F7T+eHi8S323CJ25ERaHmxz1nDvIANPBVThMXotYusFePJeu+8XuSMw+4ai9cNWNizepQ2vbtBwF2vPBnEXXX26nyVcpGPZb8Rh8qM3tPff6azgj9Fw58UHdKWy4N5McJ4SsUJk6IG83RT1kFbQOBm/rI73vXW26/x3I79JN6+bU4OW4TCTRRdMcsACcZk0futXb7j2XxADjWzw+TjTfD8dvPDzHGv01w/8ond6+0Iri7A2B9icH7queHJ+hvEQPKqY+O70t3Yd6Aci80bkZexb/huPA1SS4bB0HyVt69N5UsfIT5HbAacoXSksE2uX7bew0tDf798TsTqYrbrG7BvLaPDYVf7P5eLey3lGz7LXIcIzjfqSr7wTjAcHdtRyF/gblQmDJAuuayfimIk5En35Z5hbF72O9BbAfrr7XpYVv8Aey0W+Spmt+m69nTSvK1VrMYWiNrN1DusjTubwNDPeKV4FN8ti9BMZizMTvtHALMDUIpYSjZjkqpyObUaHgGrEWAtG/UDWjdX4h1/u1v97yuVfjtZSt/HZ++xfgmMxZmJ36uP8dzsPiTX+es/v+Vkr8tXevTeU7nyV/tsrKCmikmYn4BUMfIT7B4k1lf/AHfO+T9suJMyVOEsTC+uzttCyUty3+A0bPsN9g8Qw4k1d+jPmYUTCbXkqfKew+MT6SkgKFjbyN+C1bXy1evtYe4hrfpKO/WPnaJabBLW4yyqtfZyMtSjzO2gFcbcK3P8Frm9psR3qWuunHjgSPARGfuKclvW+/r+PJKwMpta2WPkZal5TJAembhYWN2rDH4TR2HDLr7sXtPUJONDltKuLGt69N+UCThny2MlOUvwyos9Ma67xEDiB4bL/wA+awh7bn4hrfpurt+Prji0YKEpJWXN4hFws/iVfbkBgDDOPrPEK3DNEvvKctuv8hP8TCYgJp3mt4IwzR6o4omFUykufmt0tqsfigyTHJW6P6ilucOpsAb3sJImHymFA0LGnkH8USqDMaUSCrHq4C9qfPY1MT4UcxT/AA9NA7e06sC3Z3EgtwdSKnP8MhCRJV9LrWRjGGu0FFA0LOtkrv8ACkkDNySSEpHte9alq1qti/Ca2okXIQiOPbrir4fwaEJElW1MAdyt6v0/BABmcldXwTh3O6ruD8BgOc9rU7JdppiUh3T+cuK/48+961veArWjYGiwNWqLIwjDvBIRJCxTkmbu4UGTYKhLvA0qsMEuEXfXVYtgKOQidyCoc2Bo2JYGkXjglgi/Ar5Li124YCkwVM3PAUQ9YFFYP4NKOpxsVdqM9pgOZMDUNkwNDHA1yoc1HWvwq7W99TssYSnsVU2XA0OCqUx5AcIa/Dd/vlmv8ZvsGtb3ga5ouBop7wFQqLIDhDX4l4jD/wAes1re8FXNFwNEXeBpVYYJcIfxeyF7yXUr17LGhUJd4GkWhg1wi7/Mwh4a3UHhL6GSvjZ+tt5+st5q6byF6xrIX8cFcJzwZIE10O/30aPAXqKR/Qpdn3v01bWmybE2wLYrtqGDv44O2TlkGQk6AjQBYS5Uhh70m8LYtFzcty+qBJw2vcsixa4WNmt63r77aPDYdTW20gYMkSQ6He9a1J8PqLbBM1r06De9a1a2mz88GTDyFs5DI3rGshf5q+BkbpSWfqyefqiWbtUtZ+rp5K8V1kr8eTvy4S4bnhGDE6Jdw6+0roZMjLUtfbdf/I9Uo6ZSSdsufX2zJAejW6gtfKsWsHWcWDFAUeglLUI2tptntSbplJI2YWvtt5cVh1ir7CuBvobwTypc/nmIyAeFuFYYa+3krN5jYKdk+1K1dboykiKFnZSb32xC4mLBEgWH0zlqMSz2QvXxKSOovNRz9Sczdk5vJPNSyRST8lkGWcWohRwQRi19epa3vnMWAR2NhNyfblHDKTReE3D6L0/tJ9kGKZdrUhp4tWLL/adgS8YbM7qEIwjzMnGsJ94jk+4DnIc6yzi1rnvJE2/2HWt7xepaNi9IAeCCMWvsnOI4sW+yTTrfSfO2yNUTrhGydy1vet1Np7/P4jF2Gvq1mYAUXX+6UtR05dDhggO2k1Ewqw533hpjaZI0Xun8ZUWfv65b6HEj2ARZhmpeawZIFj9TDQV9M3usmZp4tfS6hmta19FnYwTiUszE7tre47qXvli5LSPGh2IZZikC8YhgbtaeCbXLnrrzlOEcNZKCw18PWMWrRs3vcto1RWsUUErD6LO1iDJylOXeFzTXMoxFoHm7/U7NEko58g2bMXeevmsqZmSNOIH0ylqOrS34u+VDu1T+dpv0Q7UOEiSSpN7wQ4Ch9DTwFY2FiVyXfaN33h+V6TgR7Sv7PuoER4foZsll8aujkze9y335Q+12By1OGeIy+pO1icYFg7tqOQv5Z+vxz9fhk7/eEu2ZYZo5vwPw+xxrzlocHD7ZY/Natj47l+3ww/N5S3OX/wCfP//EABQRAQAAAAAAAAAAAAAAAAAAALD/2gAIAQMBAT8BLI//xAAUEQEAAAAAAAAAAAAAAAAAAACw/9oACAECAQE/ASyP/8QAQBAAAQICBgYIBQIFBQADAAAAAQIDABESISIxQVEEECNQYXETIDAyQFKBoTNCYGJyFJGCkqKxwSRDstHhNHCA/9oACAEBAAY/Av8A6QWlvvJTOWf1wRmgx+paFlXf4H63Z9f7QUqEwbxFVbSu6fC6S2b5CRyMFKrx9QNLyUNRbcE0mC2q75Tn4R/0gaSgWVd7n9QtLzTqLa7/AJTlBbcEiPBvjgIU2sTSqFNKwuOf1Apk3oPtryWLlQW3BJQ8EpPmTqpoG1Rdx+oEEmyqyepk4O6qC24JKHgWuNWv9S0LJ7wy+oEK+YVK6mTguVBbdElDwAULwZwlYuUJ6ilQmDFXw1d0/T9BR2blR4Hq0V1KwVlFB0cjn4BAxRZ1lpzG45QW3BWPfc2zaWfSPhgczFamx6x8RuKlNn1juA8jFplf7RWN4SOqgs7VF/EdWg4P/IrrbNyu3LRNTn9+pK5Y7qoLbgkobi2TZIzwiekOT4JjZtJ59htG0q5iLE2zwglqTg94orSUnI7tZcR8ZAlziRvEJdTheMxCXGzNJ6pQtIKTgYLjE1N5YjtdHfTc4mvnAUmoisQh0YjqTTU6LjnBSoSI8fQaTMwFaRbVlhEkiQ7WTqAqCrRlUh5TfFFYIIwO61tH5DB0hgbT5k56ujcOyV/TFXWLujCS8U5wUqEiMD2bbS8UftCm3LxHQLNhd3Pq9I3U6P6oKVCRHjaSrLWecUGkyHgZLElYKF8WxNGChuoJNzglqL+jC18yM9Q0Z81fIf8AHXtWV4LESdFWChceyb4TEUkfFTdxiRmFD2i18RPe6tNup4e8FKxJQw8WHnxssB5okBIDwZSsApOBjpGq2f8AjulK03pM4QtNyhPUXdHqcxHmgpUJKGEBh87Qd0+brlDiQpJwMdIxbbyxHYuM/wAWrpWRth/VAWm8XiEuINR6tJNl0Y5wUOJkoeJ6V0bJP9USHhZETBjpG/gn23SWDei7lrNVFzBcUXBI4GAzpJt/KrPsCtnZuexig6mR67c7lWTr6Rqy9/ygtPTCCbQOETF3VkqpeCooOj1z8OGxd8xyEBCBJIu8OpCxNJgtm75TmN0JdThfxhK0d1QmNZQ6mYgrb2jfuIDOlH8Vn/PYUHUzEFbW0b9x123cxXrmLLouVH6TTKk/KTh/51qDg/8AIrrbNyvCyEAH4iq1eJMhtE1pivdH6ZZ4o6pU3s3PYwGdMSS1gYC21UknEdgVt7Nz2MUXkS459VWjqN9aepQdHI4iAxpZm1/tu/4PWKVpBBwMdJo4Km8sR4TplCw3/fxfSJFlyv13QFJMiLoycT3h1ShxIUk5xT0FdJGLSol3HMUKv7AocSFA5xT0a0nym+JKEjrS4gyUkzEJcT6jI9QpWApJwMUEkqbwneOuXdHqcxTnBSsEKGB8CALzCG8cefi1j5k2hukOtmse8Bxv1GXWBUmsXHstoi15hfExtEZjXM/DVUoQFoIKTcR2lqpeChEnBVgoXHwFM91uvxrjeRq3OoNCZAnLVTb9U5xTbPMZeBpNbNz2MUXUy/zqsGzik3RRnQc8p7QpWkEHAwXNHmtvLEduCb12vGpX507nbdwBr5R02jyDmWCoKHElKhgY6RpUj/ePK5ijwNFxIUOMFWin+ExRcSUnjqCXdoj3ibSweGPaFbVh32MUHU0T2iED5jKAkXDxra8lboAPebsmJLElYKF8WxNOCxdFJJkRiIDel1Hz/wDcTHgaLqZxS0faJyxiREjFJJIOYijpIpjzC+JsrB4dnQdTMRTRbazy7MHyCfjnOEjugE9xVStUlAEcYpaMaB8puiTyCIqNJvyGNmq1ik3jwW0Ra8wvikztE+8SN8UkKKTmICdJTMeYRSaWFDsyvR5IXlgYoOpKT2LznpqClAqmZACLTaxFl4TyNXinx9m6f07htoFXEa5KAIyMT0c9GrLCKRSavnRFDS6/vEBbagpOY8FbTJXmF8Um9qjhfqpNqKTwijpKaQ8yb4my4Dwx7Kg6mY/tFJqbjfuOwB8xJ1NIyE9ezcMsjdATpA6M54RMGY8O9+B3SlxHeTAcR6jLqzU3I5pqinoT0/tMBGntKZV5pVRSQoKGY8FNSaKvMmJpHSIzTqpIJBGIijpKaYzF8TaWFcOyKkbNzMRJ1HrgeswPt1AfYOrLvN+WKbRn/jwz34HdVIVoPeTAcbM0nrSUARxikzsz9t0V+DtpkrzJik1tUcL9VJBIOYii+OkTnjGzXa8pv7GisTBwMFeifyGKKwQcj1Gx9o1D8B1qbZ5jOA436jLwr3KW682j3kwFtqmk4+M2iLXmF8TZPSJ94koSMVQEubRPG+BQXJXlN/YydTX5hfBUjaI4X60ctTS8xLrhXyHvCApJmDd21agPWPio/mipaf36kvMobss1oN6YpNK5jEeN2qa/ML4mwekTljElCR46pL2iON8SSqivyq7A62/xGqkPkVPsDoysK09nKlTVkmNkhKB+8W3l/vFZ17N1Y9YS473tTLfru0LaVJQgIf2a/Y+Ok6j1xilo56ROWMSUJHUEu7RHG+JtLnwxHXUOOpk/YNS21XKEoUhV6TLrocT8pgKFx7Cbiq8E4mJToI8o69UNt5DUR5RLdYIvEJfZ2SzfK6cW0TT5k3aqJtt+UxYVJXlN/jtomvzC+CpG0bzGGqkglKsxARpf84/zAKTMHHqvD7zqZ5S1h9Isrv59gmd6LPXoordOGUFbiiVHsEzFlFo6iTcIW55lT3Z0azs1+x1TU3ROaaomw4FcFVRtGlp4xJR6ROSolOgrJUVeNKkbNzMXRRdTyOB1VWm8URTaM8xl1HuJnqlko61NLuMKacvHXdb9etVW4e6IKlmaj2IB76q1al5qsjdw0Z82vkVn1LbQnmKo2TpTzj/TuzGQVH+r0Qy8yRHxaJyVVE0mY8WUOJCknOC4zNbXuNQcaVI/3iaaljvJ1pX5k6nm+R6lJFTqbuMFKhIjDrLGaOqpxfdTCnV4+3Y/qHBYT3eJ1hkXIv57umIDT9TuB83XtsoPpGypJ4A+NLuiiSsUZ8tQcaMlCKaaj8yctTTmRlqo+cS6tIWXc84KHUyV1T+HVGjINQrV2OTY7yoCECSRdqW4q5IhS1XqM94BrSzyc/7irch0hgWvmTnqDiPUZwlxszBhzhXqaXkrrUXUz45QVM7RPvEiJHWs5J6inFXJE4UtV6jPsPK3iqA22JJGtOjJPFW8qPfb8pgUFWvKb9yfqGRYPeGWrolnZr9jCkH5hKCk3g6ml5p6+1bB4xsnFJ4GuLNBXrDheElK6gbF6z16KElRyEBel/yCAlIkBgNanVXJhTi71HecwZGAl8dIn3jZrteU37iKVCYN8FHy3pOoT76KlQ5kq1qU3ig9shTUpJF0WmVftFaT+0XGLLSz6R8Kj+VUT0hz0TEmUAcer0CDYRfxO86Gkpm2rHyxPR3qslRW0T+NcVgpMSKukT90bUFs+0TbcSrkdwGQ2iK06gk91yqGnv4TqSMF2fAXR3R+3YUUHaLu4b1Gjvmz8qjhqtoSrmI+CB+NUWHFp942eke0WNJSoZKjbNNniFRWJeOVLurtCARFIX0aWpKheDOEOJuUJ+HU44ZJEKdXjcMt7BnSjZwXluUO4oPtqKD8phxvAGrUpk3ou5eH6Ns7JPvviiq21llyim0qY3G6jNOpxGYhD4/E6kKPdNk+GOjMn8z/AI31TaUUmAjSNmvPA7jdTkowjjVC2sxVziRvGpJPeTZPVAcQszxAisqTzEbN5B9e16Ns7Y+2/bJmjyqiSz0S8lbhe5zhnnqpgWXK/XV0ajZcq9eqW3UzSYKm7bfuNWzdUPWLVBXpG0Y/YxaJRzETbUFDh16q3T3RBWszUbzv/ZuGWRrED9Q2Qc0xs3AeHjlcUiGfy1KSO8mtOqYhLmNyufWnRoKzTGycSrnVHwv6o+GB/FG2dA/GJtzpZk9bNw91MFxwzUd/OsvoSqVYjYuqRwNcWVNq9Y+CfQxPoHR6RZ6VQyUmcSe0QnkkiO4tJ4jxaT9ghn8tZKRYXWNVBRsOVevgM3DcmC44ZqO/214TkeW4mjmmGfy1lHzCtMSN+qio7RF/bUU2ncsoK3DNR+gUkm0mydwsK5iGfy6n6hAsr73PUl1PqM4S42ZpPaFrRjNeKsoJUZk/QVBRsuVeu4Qryqho/eOoptYsqhTa8Ljnq6Nw7JXt2RW4oJSMTBb0ey35sT9ChR76albgeHCcA5QDn1LPxE92ClQkRqDOkfDwV5YBSZg49cpFtzyiKTqqsEi4fQwV8hqUIBSZg3ePKTcRKFIOBlDKvsHVLzI2uI80V6rJpI8pgAq6NWSoskHVNagnmYsHpFfbBANBGSfokaM8bJ7hy3AvJdqAPKSOsXWanf8AlEjeNdhak8jHxnP5otEnn9GBl47UXHzePQ8L0GR5Q61wpdd5P3fSMxfAZ0oyVgvPxy2lXKEoSFZ0FddLuCx9Jht6237iAtpQUPGp0lGNSoaczTX1lS7ybQ+lKTSyk8ICdKTL7kxSaWFDh4tTa7lQ7oTmFpPXmkbNdaf+vpWkhRB4QEuN9LyvgKKSmeB8UjSWRtmv6hlCXEXEdYocSFJguaPNaMsR9KUl7NPGNmmvzG/xhod1VcuPYFxiSXMsDBQ4mioYfSFhMk+YwDKmvzHc8nE2sFYiJOCzgrP6NooSVHIQHNLr+yJJEhukocE0mKaLTWeX0XYEk4qMbMWsVHHdklCYMF7RhNvFOX0SHNImlHlxMBKAABhu86Ro4q+ZP0MEoE1HCA4/acywG8i/oyfySPoQIaTNRiZtO4q3odIZFn5hl9AyQknkIFMdGnjFFoc1HHe3SsjZKw8u/KomluQ+6qNs76Jj4dL8ospA5b4KViYMSvQe6d8WGlczVG1cSnlXFuk4eMbNtKeQ36W1ehyMKQsSUkyO89m2oxtFJRG0msxYbSPT6C/Uti6pe77Daj6RaARzMTeWVcBVFhlP0MUqEwb4Lfy3pPDdVhBVyEVooD7o2zpP4xZbBOZiofRRWBbbr9NzSQknlHw6I+6Ns76Jj4dL8jEkJCeQ+j1oHdvG4ahOLLR9ao2roHKuKwVn7okhATyH0m28PxPjaossq5mqNs4lPKuLQUvmY2baU8h9Lup4THigW27JxMbR1CeVcW6SzxjZtpTyG/7biRzMd8r/ABjZsk8zFlpsR/t/tHeR+0Xo/aLSGzG0ZPoYrWUfkIm2sKHA+DWjIy8T0Dpkg905bp6HRzY+ZWcWHlD1i3RWOUW2T6GK3KPMRYdQfXwFt1A9YqKl8hGxbCeKordI5VRWeymhRB4QAuTg4xJWzV90TF3gHufig2/NTeeKYC21BSTiPBTJkIotTdVkiJrAbGV58DM1AQWWKm8T5uvYdWPWPiT5iLSGzFtj9lRW24IvUOYj4svSPjiPjD9o+If2ioOH0iywr1MWGUDmY7wTyEW3Vn18FsnCOGEUdJHRqzwiaSCO2d9P7eLm0qrFJugBZ6NzI9tNxQSOJipdM5Jgfp2A0g/MuJ6a8t45Tqii2gJHDwJUoyAxjomamsfu3VNs1eU3RR7i8j2r3PxuzXV5VViB0zRHFMWH0etUVda26gesWSpfIRsWfVUUUKInggRS0hVDnWYsppK8yvBlbhkkYxRRNLQwz3aEaRNaM8RAW2oKScR2RJuELWfmM9wSStQ5GKn1/vHxjHx1RW+5+8WlqPM6tm2aPmN0AvrKzkLok2hKeQ7SQr7ArcVJIjENC5O75tGrFJuMTQZLxTiOxoA2nKtyybQVHhALyg2MrzEwimrNXa0nVgRiyx/UqKKRIdcuOmoe8TVUgXJ3iFtqkoYiKDkkvf8ALsFBdwFnluMGjQTmqAXVFw+0SaQlPIdrSWQBxjodARTWfmjp9MV0r3sOwLjh5DOKS7sE5bzmL4DL52uB83Xad/hO4afTleaRVKNk0kHPHtpqMhBTowpqzwim4o9HmbvSJNJrxViewmqteCYpunkMt7Bl47UXHzdYnykHcIW2opVwgJ0lH8SYpNqChw7ObrgHCJaMif3KiRKlq8ogOaVaPkioS7Cim06bhlBW4qajveYMiIkv4qb+PVeH27jpNqKTwMSdSlwfsY2lJvnXGzeQfWL9dpQHMxW8D+NcbFon8qo79AZIqiZMzFJWzRmcYotJ5nE9iWmK3c8EwVLMycTvlLrZrEJdRjhl1HvwO56lGPir/mitxf8AN1KLSJ8coC3dov27GajIDGCzohqxX/1vwJUdmu/h1Hvx3XRbSVKyEBelGX2CKDaQlOQ7HaLr8oviXdb8o390DhtIFXEa1J8xluofqCoIxoxR0RSOWPY1rCleVMSZ2afeJkzO/wBDowMBSawdTbQwEzuyw8v94roK5iLbA9DHwD/NH/x1fzRYYHqYshCeQjaOrPr9Blk3ou5QVqMgBMwt04/WyFYGowNGQa1Vq+uKSiSTif8A8+//xAAtEAEAAQIDBQgDAQEBAAAAAAABEQAhMUFREFBhcYEgMECRocHh8GCx0fFwgP/aAAgBAQABPyH/AIhGjYVQKRsn5vdDCfqlW8rDzOvhoz/IebIeqhjChMyrZvQHB8LnAvnFD9Dwn5Bd6Jzymhkmo958quo4tF4TF9c6TLAjlq/Ib03NeeeywBizVUs9+fHwa6x/dQQhCV7NoZP5BJDFHN8ztgbBvieFObxp4L6Qxs4yngZlNn8fsIeq4evYg9jfA8Kd224+BNzg3zm2du+1m1/ICXZHrHYuqCYXo09H1ngMMdDpWGqR12FAFCOdPSTe9j8fjoXsA9mGkGFjR9F0MBw8BcDMe3ptEy3MLWot2A5DXcuNefKVxrkWm0D6zRP2j+Vg3J9DSY1upWEHjvCBMOOzG8Megey4lmTnyVY2ZbPR49/hzVuTsT1H+I5UilsI7iiHSkdaHDly/WoWG6iXtRUVEOtlCKMpKTyqcBci3kp4I4hDu0GQSOEcKcmiQjlV5HB5wVFwMj2cXEgUOObxfD3vtOn/AB+qW6XJxriuRo5nYiED/kaZsqEcvHl1/qqUR5f/AGjJAwAgO9jnMnM619VjY0qxLBCbrk1eU5PzNNgIWPWcdme7x1a0gCpO0GEfJ5eNPDdCEJ3eDJEOqbNCFD+fGk58eXz7LkQX+OdNCVCOXjRU2c/0o8YvN5+BsNnBKxiHBO6psXHXiVjUvXZeo40kMNBwCfLtrGQ4C/XUrGV91CEa08/mowAd+jSmAK3MFUQyMM68eyojJjlz0xVkKy8WikdT8KAmsAMvB2+6IUwBbz5t0pRBBzKwaiNiAjHyflTMmQqyUEDlC/V+3ZAChUzLmfXJ3N5ODA9NgIQC5o/tShjw+ZmNSxj8uD2bOwWycDTFsYPibsJsNWnKgAADAPCqTAhHOmiVXz6bpnnn8za4IhsH71qSsrhg8RoLNwrhwvHtoJCVYQr9Cmyyw0eXblij17D1jaAxhjpzcaH2HZzrREkq4mfZihFhlz4pzFcsg1PD21cdBBuMDw4ZgwjV/wBx7oDOH2aMykCmQbQCP5nKiJIuIeZTi24fpf1QCTtsQN5nKr4OCeYdoURLJWpHnM9tjgOZwagmzfKUGS3ZQzzJz5KtPMtluuj4VACVsFGAzH28SJMxPakUghN0AnHYnqdiKsr1Q8wrAKzFjk5nChYYDuCznVDzCpGNOTkeyHu4s+xdD0fQqVLsZJ+ii/ZOs0IY0w544/6nhJmVgTn4tgW8pm3Q2Bcoyan7Fl7/AC7ONWAFCLku/Hk1fYhoB3GUgIVPK9KctacsDES5tvcgKxa23pHYIOEIWahta/ozmdqKPCY2Afy1jV0C54ESpSAoShAl65vFxiSHVN06toMho0y2NkxWnaLI85KCDGe5TwaLQqTPg9zmbUvraX7ooazgHvLPR4a5/axH/gARoyXny8Y3tSPYL0Zbn50T9OFNm9G2kzsDQ++z8X4BJs0Ix8A8ypp3k5cjsnM74pULzBx5OfeDWaEJrjAGP+p38Tr8uWXjY5w9Q+m52/qCxoBld36L1i4ADCgqjx0GjQIEEvPqangUjzkJo/U/9NJDnIUKMmNEji1betHnGbwdO8to1j1Cka+Lg8u8xwxoDsBB42EC8fmfG6JXz5Rl6VaieGUrOuh/KOqdIkJUqzAMrQ0ojgmfgURzk5nJqad8n/tOXBiOVGRvBISoHpcH9qwo45jmd2qB6xyqVl4C/P3c1lk9vv47Dt/3N0SV/V69KL4U9eMQSVKdWnwrhS7k9aDmsJbppUmi8EQda6GkuvDMPTOnQoMRoeY4JFeuHflXJWGXdIJDSa1Y/dFPxnJz7nq0P72MfKgePS2ooKuK9aESTxPMQ07oa+Li/S21654hJQDxouv5R0nEXA65VAinIb9SlxjBPBDz0xpOdE2dKSGHGos7moqM6MPJUxH0Dp3TsbZ58lKvLB5h3Fjr+ye2yXXPmfjaI84qJSLl+4o0JMEz8P8AQaU7oW+Ekpj7PUadhJxqVFzZXNW2J9muMlFOjijgkngjXo0fmpyNZFzmUkN6FYFkhKjOgb5UK19K507lJxooAl4rPMqb4Mj2jkZfPZJpPc7J+Wu39aUFiszNaPhrPqWp3TdZYax/aM2WydpehZCaiw5+Z0qRcl18FFCL0IfmpToCzpSJERNaBBeCQlRI+k+dCkfQ9yYhxwU5KkzT9NIgvEIdpQFZfq2CE19ztGOecBT4Y8xaeFm8xPrO673n/aHGjHFkHjL4ByNJY2kWonYGIlykUqHUqxE9X7UMAXh/LueRisCsHTmLOZsK9J/WyCHZZcv97YFVsa5Q/hyjPvvX6p/kqxB8j2MV4L33ZN9W3Hlo1csc31PGxAdFgVLH1Fh/aTtDEENCjJjUA3CdnJqF6Inpr3B8msXnsct9I2MRXDobdw6W97wzO6bVMWXj+tSprJurFFwsKVuPN2TSk8BKuqKUkMTZbDhLN2okzhQUDV+kUMk+NiDXI2HWpnyBP9pO0MRLlCqSzWDi1W9ahOWb9Q7QlFcJEbOKH6NmLAKBBDF28TqTnV50JO4xZmBQ+L13Hm9soAlcKtdcx557IfZC3XslpJRZmbTzLUgep3w2RCcZw5NF4822PHQXh7AqISGRfmNhwYwSEr02F+lF0FIGz2eCv7Nk+09J2tlIcPbFINSj/HbtaNb9jWMWRe4n8nxFFCqgJamrM3YgYyxLhkNIONMoObqsqeYqYQGUt51ExvmedRyb/WaABQjmeN6Iwu5lWkpwfQ2GxK4j+tKFx3UXHsRDIPMbOT9tLSzjo60YEPHPj210Vu1nkLP3aYK2Ve4BQBK1BH07hslox6x8bu5ayeh2pNQAujlTJeHGanLPhiOjSgJOKD4o8sqQQCZj4vJzhTWAE/bw2R4jEyGjXHZnL426AH6bPJD2LLBX/o08N0Ky7UP2E9lv4CWsWBWNGncod82PmdNs1bM8zdyAkJcSi1GBkfLtINTky5pmpBzpjxiSQ0SLiFhQiRISv33TwaAWW2o2TAz11/zZGZF93t2WcJlsvNS5C1z7I812eHwuuR3MHv8A4znQuAwDLZn1ilyli3eKMlmsQhhpfWdIAoRwTckW07l6jjsYi2GWKg6O1WiXj5XZoSa8qMOy/PozcjWDnyMPSnSgxE2zw8nsYkgVPdLF3B1hFunoV+/3Nv2L0N5JEuL4cnKmwhY4TcaTQvFS3m15bMzzF6MExFSY8Q7L/ShPMs9syG+C/nUq8NYU02vCP7qcPACZt2JyZnkds6o4BLS3UZjfto4dsBY24KpMaulKJMx3mAUGCYlcwDwP9q1LVY3EGAKA6U/5VzBslr9S0agYQkOuw33Ehwe+ctw5sLWG81JFIQPnT/Gr0WXWgmqoLE8P3riquZ69nMVXH0tvMRPZOB4prDZVwfcqWhdaLHLrZKJABlj86JDjcnzUQAO4APsikrCp9ZnnlV0T6Se+yQW3L28AtiHpsdAYHb4KLha0ssuO9MQVZnkdgMAc6seTrRjtcYo/IdYUMBDBJ/dJQPwVXhvSZ8a1A/6H5pGUIyNSRyyeZj77MNtCsLgjw8LQzXsUBpvZGYwNjzUIgjI7kEYz3NsxPzkcGrJR5FlskBdnmeGUCWxWajtx674g59a3oLHz9Tg7jCAmcOeVNqndzSsP/W3vskpC9F8NGXXJ30OjOmfOrGPpuFCJIyO4catGxHnXLN9FEtj0GSmcoSE2S+nzk7Ma2yWFfb/5Vjo6Yu9d2z5daSlWVzd+MRr146aUaeTDzoRJGTx+Co5r6hSkbM9G+Y2fyBMnZNh6Sgzdc9SsKYLNlcVZCPGGyOAl/thXFtinttJAflaRS2U3/wDW2MqOM0XzyqIn3VfxrhUq1PptCPk+dFJFOSQlxo1ZYNB2pBzeH6VOo+RcpSIPIUtfiEU0IeglqIThD2hP2P8AYPCld41385RhKXDO9MLwBhWDT0PrRTe5DS0k6jqxcYNAgFrUW7h3itwqDUfuaM7Rak6c5mzDtecMj4DKRvmeFO7xrv8AaXjzluKHXp5Pz2CMIMZ40jBAYR2RdlxxGT3yONS2Xiaca2VfwG7156Z+W4XwPsU45fsLoahl8tlzmOg0qLAZO8HAw8n50nS4Vbv4FCwPL5Nwxvl+tq4Xfs7E2YIa9uINdmZZx160IgjI9ziAASr10s4P4n4IMMlmjSZHx167ghTE9K9RRmmooyT2LaBeWvClQIhHLY00vVfCgyCkGfbnBFm4c2sLh+DAnj5qKEoCUZnjyCXSp8cOulcZeyHbYWMn9pFQITJ2R7WMPppR0k/WaGkTUZ2QB2sFDouUYPOrmt9lrH8ITWUM2m4JUFgHv61M7f3337QImeZfKnc4SE2+rgFWYtc1Iy7qp/CxRks0BIC59X8fAr1I+aiXggfrt8NE+f4ihKguJlQRjAfDm4+OxsXyUpcQ+2KQZ3mfiYIEsH6TSpTpl42F0ZTXJ+6VeiUOox7UKE+i4+lP4mMMc1V1F0upXHhy8WfElHLjVgt63WP320t5SafioEJ4KqLSViMUVjjjnipYCyB1aKRM47S0hk0HqTj/AKlJD+JEtSD5a7yKh3G4jxhQcNLTqO442l9MNO0xC/EAPGcIrCU/UNzoCWWSi9YsPD8NHFHAKxAMj70ZOeAG6SI4waXSK83P+F4CHgiofIjVbsPCAhHOmUcQsfj+EHChdGvoiiKtADd6cVRMOJ+DMVZAM6BEY5vExWUbH94/BEyZQo4AhyOBvRXPNk/Vy/AZUfmUuGuK7+VYnDxG9SARJHJrPrXGb+b8dgq6FDydah4Hnj71HYpnfR0E6CN8RpFCU5vutc3uCsBLUXbaEKvZmlyo15wg9N/LJaucaiwEA3kFeZ7EFQKRpi0TdxjQ8ccoEfgLFcWH6d3rhP4RS+j1Q6fOwqAipmkvrQBgR+ClQHAcyp3KrjPdR6GudUShqKgkoaCKjIRxWiYA5H4VohF1zG5p4PQTV+OOcVhvTfeoTGM5KgRtIKj8NAESRxoBcJ6LuF2GWgVDozWq78LNFJ46W8qhwuR+JjBXn3D38arAV4VFsTkqdkDS9UHMdL0oCK4jf01PhzhZfOF6cfEpFyGAr0KCqg1ccgo2N/MTRk1ZgaNDND8yj/VN9YlpfCGzkebX9JqUxsuM9YilHFwk3ggIODTuYv6vEk5xu5tN0AisBTqHhD0nCpZwrBTBxKYNJQPxmoUu3JqKnkJ79QLsVjW6JpxHKrIdzGp6McqmpZ5vdAg7NRUsA6b+dQCOhg86BKKwTv0kqH8/mT4qeeDMX9CsDACeCjSDNaJyL59dgPyBErz8AzcBKuVOpeq/DtDFPFl0de2c0d6Cmz5p5ZDWNUwXHqKv8hrMLkqTwTk69I0f2i43klIngEjViicqvVZdLPgTyFrZ8lQ/CHH/ACgzRgjZ776HB4vzIAVCubNs8mhtbvJrjWyKmnL2fWiQw5+3tSM5Vx6VwssI8CUAUqcKAZ8xn8N1XSc+IpU62x5d44UChwB5B41zEqEUXzWTyqFuHJS9aEEqTh2VDFihZ5+a+uPzqEhDqzRdpZZtYsbNzUHPVV6aVHgg+llVaPmn53dgoyWafyZ+y9YKIO6EfgJWsdJV18fNQJ+ilftBKgv5leyEUBHRRpjz0diggXBpqLC1QOcOB3kuZGMZdwCzGLTUFT5nd+OKoAcEF97kloCR5Z/eO5eFdjNcPIqI/qTaCMO8jKcjN6UqUdhkPsUSEGXbheYRmtCuG2bY+d4rgZJQXjGWXJ/O4VG2B9a7iUgJWhUncH0pzMgYUg9eV3rgLxVBUkNoIt0KW8S8N/69x+9gLSpvwcLDeY0qC4mVACjofl2ykC909T33CUemM+avLBJ83fPzBirQ0B58P9oHcmkOSrSmY7gkzNht34p9NcjAcN6iqRhMGijYPs17Tm/cPfcJQxmqVJD9pKMpuanu+p1rvSjOVfUoA3YYB0pKDigwOetGwQ0DuLBBf1NNGxi73MuRImVDLGV0a9nmkfK+4ymrsVQOolEWBuCHmUDNCEwD12iyPyKxG9P5VJCeqhU+fcMcanCTNZoon0a/IUHgOb3JO8wn7L0rV0uI75jQP58KwqcWpmdiN76G58CnJr/fUIih1VKcWdoNWvJzNJpB1wVhh3CcmKTYpJiYTzo333dIQF9XYm+6w9gwCabgfV6tChDI7log5b6pBKPBseeu/nvS+v0ttiRuXu9t1FcMJeggleR+d+4UCWgEEcRqcMbPGjhSXVz3/wATGNTMpdoUjqbJ3e9YbrGGaXteDMoOKoIuXk0R3np9j/KhUseOolK9NbPL8Dm7f6l81PKZOFWyZ2NDL82mJhum1w5ByMj84aYtklf/AD7/AP/aAAwDAQACAAMAAAAQAAgIAAAIAAAEEAAAAIAAAAEAAAEAAAAAAEMAAEAAAAUAgAAMAAAAAgAAAEAAccAAMMc84AMMwsMcMoAAMsQAIUsAgAIMAAAEcAAEMc8IAEMYEoUcMgEMM4AAQAAE8wwQg8ww8M88oAAc8AAQ0YgAQg8oAAUckUAQ8gAwYc8QQk8wAA0804AwAAAAgAAAQAAAo8wIAAQYAAAAsAAAAAAAAAwAAQwAAAAEYwgAAAAAQAwAAAAQAAAAAAAAIAAAUw8EIEAAAAAE8EMMAAAAAEIAAAAAAEM4kA4MoMIAEUAAAAAAEIgAEM8YgAEIsk8s8kAAMMgYM8YoAQEMIAgEMQAMMcsYAssc8Ik08AAEMgQAAAgEc4YAA88gg0k08YAU8QA4g88gAU8gAAE8ogg08848888888sQg8c884AAAAgUAAAAAgAAUc4Mw8cwEAAc0c4sYkAAAAAAAAAAUgU88888888gAIwgAAAAAAAAAAEAAAEAAUU00888ggkQ8Ig88IEAAAAAAAAAoc888488880Mc0oAAAAAIMAAAEMAIAEAIAg0c4888cUEY0sc888MMAAEEIAY0888888888888sgAEMgAogAEQ8wgQg8QAQYU8888888s8g08888sUAE04AEI8888888888888ssc4wAAAAAQwgAAEggAAU40008888888s0w0088sM8QAAUw00k88888888888Q0gAAAIAAAAAAAAAAAAAUMso88MEY88Mk4I0c088scEAQc04408oc8884Ec8kAAAAQIEAAAAMIIAAEIAAo08s888888888cokcw08cMUkAocM0888888w84o4AMMIA4AgEM8ww4A80Qg08Y08888888888888cIEU8840Mw04UM8884k08o4kU8wgAgAAUwgwAAQQAAAwkEwI4088888888888sY448gU84wA0M884M0wAYg84gAAAAAAwgAAAAAQAAAAAkcsIUgY08s0888wk88s84YgU40MQA4gMgAAcEsAAAAAAMAAAAAEoAAAEAAAEMEY08888888888M8888McUQ4s8IQQ0Y4AM08cgAAAEAAcAAAEc8oAA0gEsEc8U4Iww088888888888888o808888M8s8Y0s8IgAMcQAAkAAEwwwAEwwEAgQwgAgUkoA888888888888888oQ88888888884w4AQwwwAAAAQwAAAAAAAQAAAAAAQkgs88s400884w88888sMoM088ww0088s4gQggAAAAAAUAAIAMIIUAAAAAAIAAQQ008c8888sc888888QAMc84QQc88AckAAAAAAMMskEAEs80o4csIAEM8IEAcYEkM888888888888ssoQI88cMc84c88YAAEMsYA0EAcU8gAAU8gAAc4wgAsc80888888888888888k0oI488884MYsogIc8oAAAAAEEwAAAAAAAAAAAAAAAAAM884088880888408UcoUMYwsAAQwAAAwwAAAAAAAAAAAAAAAQEAAAAAAEAAAAw8s8888cc888s08IcIMEY8UAAAAAAEAAAAAEIcsAAAMs0oAEcIAMM8oAAMMQEc0888888888888oA88oIEEMc8sUMIAAEMMAU0gQEE4AQAs8AQ088gAAs84AAEc0888888888888M884gEc8woQcwAAcU8gAEAAAAQAQAAAAAgAQAAAAQAAAAwaA0888w0888888sc88MYAAAAAAAAAwAAAAAEIAAAAAAAAAAAAAAAIMAAAEUM4c888ME888k888848c88gkAAEAAAAAAAAEAcEgAAMMoUQEAAEAMM8AA8YMc888888888888888888888sM0AAQEIAAAEMAA4gAAU84wAgk4gAU88EIM4k8888888888888888888888888okAUwgAUY80wAgAQ0wwwAAwgMIEU0QQIcc888888888888888808888088888soIEAcQwgAAAAAQgAAAAAAAEA8QAcc88EEc88Ic888AE888gE8884E888occ88AEIAgAAAAAAEAAAAMUYIwccMc8888888888888888888s88888c8888c888okYsAAAEEMI0kAEc400c88888888888888888888888888888ww8888888888Y8gAAM8wAAQAAgsM88888888884888888kY480888880wk0QgEMg888888888gAAUwwAAAAAAk8oo888A48QcgM888U4Y4AQQwgQAwAgQAAAAAAAw48wAo88cAQQQAAAEAAAEIQE084sYc8888Yc88sIwEEIIMAAAAAEIAAIAAMAEAEoE884AAEgAAAAAE8UAAA48AIM888884g888coAEIc4oAIU8gYAc8AAU844AAMQ00okckAAc88wAAAAU8g0Y88884wEcc88owAAAQwgAA044QwgwwAQQwgAAcwwg088wgU84wgAgAAEAwAAgQMMUo8MwAcQgAAgAAAAAgQAAAAAAAAggAAAAQAAUY8kAAAQAAAAgMEAAAAAAAAAgk080AcAAAAAAAAIAAAAAAAAAAAAAAAIAAAAAwokUcIAAAAIEcMAAEMU4AAsoQgUssgAAM8AAA8MgAAMM4AAMMQAMcc8AAEMcU4U88EAcM8cgwAAEU8gAgU4oAAE0gAAc8oAgc0gAAM00gAM88gU88wgAU8wgkk8g0A888wAAAAQEgAQAAAAgAgAAAAAwAwgAAAAAAAAAAAgAQEAAAAAAQgAAAAAAQcAgAAAA/8QAFBEBAAAAAAAAAAAAAAAAAAAAsP/aAAgBAwEBPxAsj//EABQRAQAAAAAAAAAAAAAAAAAAALD/2gAIAQIBAT8QLI//xAAsEAEAAQIEBAcBAQEBAQEAAAABEQAhMUFRYXGBkaEQIDBAULHB8NHhYPFw/9oACAEBAAE/EP8A8QTxaKAhBvejLUQiQjp6J8G/+EPPg6ITVFflKZwqxvrm34+2lDBgcf8AxR6h6aQGBrzoT28mRMRp2pSvfitTue1hNFoIYP47LTl2XYiMJ789keSfeT4T6E+VyYFHAHtNROooHEA6rJHJKHVXAwZbxyTJ9pitqLoICHC5i3E3+CnyPzRjZvQ3JyER3D4BAHYmzeGpmUpqEdBkHMfZjqPsUJcj+43om1XMFlwP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" alt="AktronPhs">
+  </div>
+  <p class="h-pre">Физика &nbsp;·&nbsp; Двойной искусственный интеллект &nbsp;·&nbsp; AktronPhs</p>
+  <h1 class="h-title">Aktron<br><em>Physics</em></h1>
+  <p class="h-sub">Платформа где Gemini и Groq думают вместе — для лучшего результата</p>
+  <div class="dual-badge">
+    <div class="db-gem"></div>
+    <span>Gemini Flash</span>
+    <span style="color:var(--w4);font-size:.5rem">×</span>
+    <div class="db-grq"></div>
+    <span>Groq LLaMA</span>
+    <span style="color:var(--fin);font-size:.5rem;margin-left:4px">→ Лучший ответ</span>
+  </div>
+  <div class="h-badges">
+    <div class="hb">Фото задач из учебника</div>
+    <div class="hb">Dual-AI дебаты</div>
+    <div class="hb">200+ формул</div>
+    <div class="hb">Скачать тесты</div>
+    <div class="hb">Калькулятор формул</div>
+    <div class="hb">Планы уроков</div>
+    <div class="hb">10+ модулей</div>
+  </div>
+  <div class="h-cta">
+    <button class="btn-p" onclick="go('vision')">Сфоткать задачу</button>
+    <button class="btn-s" onclick="go('teacher')">Панель учителя</button>
+  </div>
+  <div class="sh2"><div class="sline"></div></div>
+</section>
+<div class="divr"></div>
+
+<!-- STATS -->
+<section class="sec" style="padding-top:50px;padding-bottom:40px">
+  <div class="stats">
+    <div class="stat"><div class="stat-n">2</div><div class="stat-l">ИИ работают вместе</div></div>
+    <div class="stat"><div class="stat-n">200+</div><div class="stat-l">Формул и законов</div></div>
+    <div class="stat"><div class="stat-n">16</div><div class="stat-l">Разделов физики</div></div>
+    <div class="stat"><div class="stat-n">10</div><div class="stat-l">Модулей платформы</div></div>
+    <div class="stat"><div class="stat-n">7–11</div><div class="stat-l">Классы</div></div>
+    <div class="stat"><div class="stat-n">PDF</div><div class="stat-l">Экспорт материалов</div></div>
+  </div>
+</section>
+<div class="divr"></div>
+
+<!-- VISION: PHOTO OF TASK -->
+<section class="sec" id="vision">
+  <div class="sh">
+    <span class="stag">Модуль 01 &nbsp;·&nbsp; <span class="badge-ai g">Gemini Vision</span></span>
+    <h2 class="stitle">Сфотографируй <em>задачу</em></h2>
+    <p class="sdesc">Загрузи фото страницы учебника, рукописной задачи или схемы — ИИ прочитает, распознает и объяснит</p>
+  </div>
+  <div class="gp" style="padding:30px">
+    <div class="fr" style="grid-template-columns:1fr 1fr 1fr;margin-bottom:18px">
+      <div class="fg">
+        <label class="fl">Класс</label>
+        <select class="fs" id="vis-g"><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10" selected>10</option><option value="11">11</option></select>
+      </div>
+      <div class="fg">
+        <label class="fl">Что сделать</label>
+        <select class="fs" id="vis-action">
+          <option value="explain">Объяснить метод решения</option>
+          <option value="recognize">Распознать и записать условие</option>
+          <option value="hint">Дать подсказку</option>
+          <option value="theory">Объяснить теорию</option>
+          <option value="check">Проверить решение</option>
+          <option value="full">Полный разбор (без ответа)</option>
+        </select>
+      </div>
+      <div class="fg">
+        <label class="fl">Режим ИИ</label>
+        <select class="fs" id="vis-mode">
+          <option value="dual">Dual-AI (Gemini + Groq)</option>
+          <option value="gemini">Только Gemini</option>
+        </select>
+      </div>
+    </div>
+    <div class="upload-zone" id="uz" onclick="document.getElementById('visfile').click()">
+      <input type="file" id="visfile" accept="image/*" style="display:none" onchange="previewImg(event)">
+      <svg class="uz-icon" viewBox="0 0 36 36" fill="none"><rect x="3" y="3" width="30" height="30" rx="4" stroke="currentColor" stroke-width="1.2"/><circle cx="13" cy="14" r="3" stroke="currentColor" stroke-width="1"/><path d="M3 26L11 18L17 24L23 19L33 26" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <div class="uz-text">Нажми или перетащи фото задачи</div>
+      <div class="uz-sub">JPG, PNG, WEBP до 10MB</div>
+      <img id="prev-img" class="preview-img" alt="preview">
+    </div>
+    <div style="margin-top:14px">
+      <div class="fg" style="margin-bottom:14px">
+        <label class="fl">Дополнительный контекст (необязательно)</label>
+        <input class="fi" id="vis-ctx" placeholder="Например: это задача по электродинамике, 10 класс Мякишев...">
+      </div>
+    </div>
+    <button class="gbtn" id="vis-btn" onclick="analyzePhoto()">
+      <svg viewBox="0 0 13 13" fill="none"><path d="M6.5 1L8 5H12L8.8 7.5L9.8 11.5L6.5 9.2L3.2 11.5L4.2 7.5L1 5H5L6.5 1Z" stroke="currentColor" stroke-width=".8" fill="none"/></svg>
+      Анализировать фото с Dual-AI
+    </button>
+    <div class="lb" id="vis-lb"></div>
+    <div class="debate-wrap" id="vis-debate"></div>
+    <div class="vision-result" id="vis-result">
+      <div class="ai-step final show">
+        <div class="step-label"><div class="dot"></div>Итоговый анализ AktronPhs</div>
+        <div class="step-body" id="vis-final"></div>
+      </div>
+    </div>
+  </div>
+</section>
+<div class="divr"></div>
+<!-- TASKS -->
+<section class="sec" id="tasks">
+  <div class="sh">
+    <span class="stag">Модуль 02 &nbsp;·&nbsp; <span class="badge-ai f">Dual-AI</span></span>
+    <h2 class="stitle">Генерация <em>заданий</em></h2>
+    <p class="sdesc">Gemini и Groq независимо генерируют задачи, затем сравниваются и выбирается лучший набор</p>
+  </div>
+  <div class="gp" style="padding:30px">
+    <div class="fr">
+      <div class="fg"><label class="fl">Класс</label><select class="fs" id="tg"><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10" selected>10</option><option value="11">11</option></select></div>
+      <div class="fg"><label class="fl">Уровень</label><select class="fs" id="tlv"><option value="базовый">Базовый</option><option value="средний" selected>Средний</option><option value="продвинутый">Продвинутый</option><option value="олимпиадный">Олимпиадный</option></select></div>
+      <div class="fg"><label class="fl">Раздел</label><select class="fs" id="tt">
+        <option value="кинематика">Кинематика</option><option value="динамика">Динамика</option>
+        <option value="статика">Статика</option><option value="механика">Механика (общее)</option>
+        <option value="термодинамика">Термодинамика</option><option value="молекулярная физика">Молекулярная физика</option>
+        <option value="электростатика">Электростатика</option><option value="электродинамика">Электродинамика</option>
+        <option value="магнетизм">Магнетизм</option><option value="электромагнитная индукция">ЭМ Индукция</option>
+        <option value="оптика">Оптика</option><option value="волновая оптика">Волновая оптика</option>
+        <option value="колебания и волны">Колебания и волны</option><option value="квантовая физика">Квантовая физика</option>
+        <option value="ядерная физика">Ядерная физика</option><option value="теория относительности">Теория относительности</option>
+      </select></div>
+      <div class="fg"><label class="fl">Количество</label><select class="fs" id="tc"><option value="1">1</option><option value="3" selected>3</option><option value="5">5</option><option value="8">8</option><option value="10">10</option></select></div>
+    </div>
+    <div class="fr" style="margin-bottom:16px">
+      <div class="fg"><label class="fl">Тип задач</label><select class="fs" id="ttype"><option value="расчётные" selected>Расчётные</option><option value="качественные">Качественные</option><option value="экспериментальные">Экспериментальные</option><option value="графические">Графические</option></select></div>
+      <div class="fg"><label class="fl">Контекст</label><select class="fs" id="tctx"><option value="">Любой</option><option value="бытовой">Бытовые ситуации</option><option value="технический">Техника</option><option value="природный">Природа</option><option value="космос">Космос</option></select></div>
+      <div class="fg" style="grid-column:span 2"><label class="fl">Пожелания</label><input class="fi" id="tex" placeholder="Например: с трением, про автомобиль..."></div>
+    </div>
+    <button class="gbtn" id="t-btn" onclick="genTasks()">
+      <svg viewBox="0 0 13 13" fill="none"><path d="M2 6.5A4.5 4.5 0 0111 6.5" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/><path d="M9.5 4.5L11 6.5L12.5 4.5" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Сгенерировать с Dual-AI
+    </button>
+    <div class="lb" id="t-lb"></div>
+    <div class="debate-wrap" id="t-debate"></div>
+    <div id="t-dl" style="display:none">
+      <div class="dl-box">
+        <div class="dl-info"><strong>Задачи готовы</strong>Dual-AI проверил качество</div>
+        <div class="dl-btns">
+          <button class="dl-btn" onclick="dlTxt('tasks')"><svg viewBox="0 0 12 12" fill="none"><path d="M2 9V11H10V9M6 2V8M4 6L6 8L8 6" stroke="currentColor" stroke-width=".9" stroke-linecap="round" stroke-linejoin="round"/></svg>TXT</button>
+          <button class="dl-btn" onclick="dlHTML('tasks')"><svg viewBox="0 0 12 12" fill="none"><rect x="1.5" y="1.5" width="9" height="9" rx="1" stroke="currentColor" stroke-width=".9"/></svg>HTML</button>
+          <button class="dl-btn" onclick="printStr('tasks')"><svg viewBox="0 0 12 12" fill="none"><rect x="1.5" y="3.5" width="9" height="5" rx="1" stroke="currentColor" stroke-width=".9"/><path d="M3.5 3.5V2H8.5V3.5" stroke="currentColor" stroke-width=".9"/></svg>Печать</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<div class="divr"></div>
+
+<!-- TESTS -->
+<section class="sec" id="tests">
+  <div class="sh">
+    <span class="stag">Модуль 03 &nbsp;·&nbsp; <span class="badge-ai g">Gemini</span></span>
+    <h2 class="stitle">Интерактивные <em>тесты</em></h2>
+  </div>
+  <div class="gp" style="padding:30px">
+    <div id="test-setup">
+      <div class="fr">
+        <div class="fg"><label class="fl">Класс</label><select class="fs" id="tstg"><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10" selected>10</option><option value="11">11</option></select></div>
+        <div class="fg"><label class="fl">Уровень</label><select class="fs" id="tstl"><option value="базовый">Базовый</option><option value="средний" selected>Средний</option><option value="продвинутый">Продвинутый</option></select></div>
+        <div class="fg"><label class="fl">Тема</label><select class="fs" id="tstt"><option value="кинематика">Кинематика</option><option value="динамика">Динамика</option><option value="термодинамика">Термодинамика</option><option value="электростатика">Электростатика</option><option value="электродинамика">Электродинамика</option><option value="магнетизм">Магнетизм</option><option value="оптика">Оптика</option><option value="колебания">Колебания и волны</option><option value="квантовая">Квантовая физика</option><option value="ядерная">Ядерная физика</option><option value="смешанный">Смешанный</option></select></div>
+        <div class="fg"><label class="fl">Вопросов</label><select class="fs" id="tstq"><option value="5" selected>5</option><option value="10">10</option><option value="15">15</option><option value="20">20</option></select></div>
+      </div>
+      <div class="fr" style="margin-bottom:16px">
+        <div class="fg"><label class="fl">Название</label><input class="fi" id="tstname" placeholder="Контрольная работа №3"></div>
+        <div class="fg"><label class="fl">Класс/группа</label><input class="fi" id="tstcls" placeholder="10А"></div>
+        <div class="fg"><label class="fl">Тип вопросов</label><select class="fs" id="tsttype"><option value="разные" selected>Разные</option><option value="только теория">Теория</option><option value="только задачи с расчётом">Расчёты</option><option value="определения">Определения</option></select></div>
+      </div>
+      <button class="gbtn" onclick="startTest()">
+        <svg viewBox="0 0 13 13" fill="none"><rect x="2" y="2" width="9" height="9" rx="1.5" stroke="currentColor" stroke-width=".9"/><path d="M5 6.5L6.5 8L9 5.5" stroke="currentColor" stroke-width=".9" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Начать тест
+      </button>
+    </div>
+    <div class="lb" id="testload"></div>
+    <div id="test-active" style="display:none;margin-top:20px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+        <span class="fl" id="tprog-l">Вопрос 1 / 5</span>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:0.6rem;color:var(--mono)" id="tscore-l">0 / 0</span>
+      </div>
+      <div class="pt"><div class="pf" id="tpf" style="width:0%"></div></div>
+      <div id="tqa" style="margin-top:20px"></div>
+      <div class="afb" id="tafb"></div>
+      <button class="gbtn" id="tnxt" onclick="nextQ()" style="margin-top:12px;display:none">
+        <svg viewBox="0 0 13 13" fill="none"><path d="M4.5 3L9 6.5L4.5 10" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg>
+        Следующий
+      </button>
+    </div>
+    <div id="test-result"></div>
+    <div id="test-dl" style="display:none">
+      <div class="dl-box">
+        <div class="dl-info"><strong>Тест сохранён</strong>Скачай для класса</div>
+        <div class="dl-btns">
+          <button class="dl-btn" onclick="dlTest('student')">Для ученика</button>
+          <button class="dl-btn" onclick="dlTest('teacher')">С ответами</button>
+          <button class="dl-btn" onclick="printTest()">Печать</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<div class="divr"></div>
+
+<!-- EXPLAIN -->
+<section class="sec" id="explain">
+  <div class="sh">
+    <span class="stag">Модуль 04 &nbsp;·&nbsp; <span class="badge-ai f">Dual-AI спорит</span></span>
+    <h2 class="stitle">Объяснение <em>задач</em></h2>
+    <p class="sdesc">Gemini и Groq предлагают разные подходы к объяснению — вы получаете самый понятный</p>
+  </div>
+  <div class="gp" style="padding:30px">
+    <div class="fr" style="grid-template-columns:1fr 1fr 1fr;margin-bottom:16px">
+      <div class="fg"><label class="fl">Класс</label><select class="fs" id="eg"><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10" selected>10</option><option value="11">11</option></select></div>
+      <div class="fg"><label class="fl">Тип помощи</label><select class="fs" id="ety"><option value="подсказка">Первая подсказка</option><option value="метод" selected>Метод решения</option><option value="полный разбор без числового ответа">Полный разбор</option><option value="теория">Теоретическая база</option><option value="аналогия из жизни">Аналогия из жизни</option><option value="ошибки которые делают ученики">Типичные ошибки</option></select></div>
+      <div class="fg"><label class="fl">Стиль объяснения</label><select class="fs" id="estyle"><option value="академичный" selected>Академичный</option><option value="простой и понятный">Простой</option><option value="через примеры">Через примеры</option><option value="пошаговый">Пошаговый</option></select></div>
+    </div>
+    <div class="fg" style="margin-bottom:16px">
+      <label class="fl">Условие задачи</label>
+      <textarea class="fta" id="eprob" style="min-height:120px" placeholder="Вставьте условие задачи...&#10;&#10;Например: Тело массой 5 кг брошено под углом 30° к горизонту со скоростью 20 м/с. Найти максимальную высоту подъёма."></textarea>
+    </div>
+    <button class="gbtn" onclick="explainTask()">
+      <svg viewBox="0 0 13 13" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="currentColor" stroke-width=".9"/><path d="M6.5 4V6.5M6.5 8.5V9" stroke="currentColor" stroke-width="1" stroke-linecap="round"/></svg>
+      Объяснить с Dual-AI
+    </button>
+    <div class="lb" id="e-lb"></div>
+    <div class="debate-wrap" id="e-debate"></div>
+  </div>
+</section>
+<div class="divr"></div>
+<!-- FORMULAS -->
+<section class="sec" id="formulas">
+  <div class="sh"><span class="stag">Модуль 05</span><h2 class="stitle">Справочник <em>формул</em></h2></div>
+  <div class="tw" id="ftabs">
+    <button class="tb act" onclick="filterF('all',this)">Все</button>
+    <button class="tb" onclick="filterF('mech',this)">Механика</button>
+    <button class="tb" onclick="filterF('thermo',this)">Термодинамика</button>
+    <button class="tb" onclick="filterF('electro',this)">Электричество</button>
+    <button class="tb" onclick="filterF('optics',this)">Оптика</button>
+    <button class="tb" onclick="filterF('quantum',this)">Квантовая</button>
+    <button class="tb" onclick="filterF('nuclear',this)">Ядерная</button>
+    <button class="tb" onclick="filterF('waves',this)">Волны</button>
+  </div>
+  <div class="fg2" id="fgrid"></div>
+</section>
+<div class="divr"></div>
+
+<!-- LAWS -->
+<section class="sec" id="laws">
+  <div class="sh"><span class="stag">Модуль 06</span><h2 class="stitle">Законы <em>физики</em></h2></div>
+  <div class="tw" id="ltabs">
+    <button class="tb act" onclick="filterL('all',this)">Все</button>
+    <button class="tb" onclick="filterL('mech',this)">Механика</button>
+    <button class="tb" onclick="filterL('thermo',this)">Термодинамика</button>
+    <button class="tb" onclick="filterL('electro',this)">Электромагнетизм</button>
+    <button class="tb" onclick="filterL('optics',this)">Оптика</button>
+    <button class="tb" onclick="filterL('quantum',this)">Квантовая</button>
+  </div>
+  <div class="fg2" id="lgrid"></div>
+</section>
+<div class="divr"></div>
+
+<!-- CALCULATOR -->
+<section class="sec" id="calc">
+  <div class="sh">
+    <span class="stag">Модуль 07 &nbsp;·&nbsp; <span class="badge-ai g">Gemini</span></span>
+    <h2 class="stitle">Умный <em>калькулятор</em></h2>
+    <p class="sdesc">Введи любое уравнение или физическое выражение — ИИ вычислит, объяснит шаги и проверит размерность</p>
+  </div>
+  <div class="gp" style="padding:30px">
+    <div class="fr" style="grid-template-columns:1fr 1fr;margin-bottom:16px">
+      <div class="fg">
+        <label class="fl">Что вычислить</label>
+        <input class="fi" id="calc-expr" placeholder="F = m * a, m=5кг, a=3 м/с²">
+      </div>
+      <div class="fg">
+        <label class="fl">Дополнительно</label>
+        <input class="fi" id="calc-ctx" placeholder="Проверить размерность, упростить...">
+      </div>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px">
+      <button class="tc2" onclick="calcPreset('F = m*a, m=5, a=3')">F = ma</button>
+      <button class="tc2" onclick="calcPreset('E_k = m*v²/2, m=2кг, v=10 м/с')">Кин. энергия</button>
+      <button class="tc2" onclick="calcPreset('T = 2π√(L/g), L=1м, g=9.81')">Маятник</button>
+      <button class="tc2" onclick="calcPreset('U = I*R, I=2А, R=50 Ом')">Закон Ома</button>
+      <button class="tc2" onclick="calcPreset('Q = m*c*ΔT, m=1кг, c=4200, ΔT=20')">Теплота</button>
+      <button class="tc2" onclick="calcPreset('p = ρgh, ρ=1000, g=9.81, h=5м')">Давление</button>
+    </div>
+    <button class="gbtn" onclick="calcAI()">
+      <svg viewBox="0 0 13 13" fill="none"><path d="M2 2H11V11H2z" stroke="currentColor" stroke-width=".9" fill="none"/><path d="M4 6.5H9M6.5 4V9" stroke="currentColor" stroke-width=".9" stroke-linecap="round"/></svg>
+      Вычислить и объяснить
+    </button>
+    <div class="lb" id="calc-lb"></div>
+    <div class="debate-wrap" id="calc-debate"></div>
+  </div>
+</section>
+<div class="divr"></div>
+
+<!-- CHAT -->
+<section class="sec" id="chat">
+  <div class="sh">
+    <span class="stag">Модуль 08 &nbsp;·&nbsp; <span class="badge-ai f">Dual-AI</span></span>
+    <h2 class="stitle">ИИ-Чат <em>AktronPhs</em></h2>
+    <p class="sdesc">Gemini и Groq отвечают — вы видите оба ответа и лучший синтез</p>
+  </div>
+  <div class="gp" style="padding:30px">
+    <div class="chat-m" id="chatm">
+      <div class="msg ai">
+        <div class="mav"><svg viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="5" stroke="rgba(200,215,240,0.5)" stroke-width=".8"/><circle cx="7" cy="7" r="1.8" fill="rgba(200,215,240,0.3)"/></svg></div>
+        <div class="mb">Привет! Я AktronPhs — Dual-AI физика-ассистент.<br><br>Задавайте любые вопросы по физике. Gemini и Groq работают вместе, чтобы дать вам лучший ответ — от классической механики до квантовой физики.</div>
+      </div>
+    </div>
+    <div class="cir">
+      <input type="text" class="ci" id="chin" placeholder="Спросите о физике..." onkeydown="if(event.key==='Enter')sendMsg()">
+      <button class="cs" onclick="sendMsg()"><svg viewBox="0 0 16 16" fill="none"><path d="M2 8L14 2L9 8L14 14L2 8Z" stroke="currentColor" stroke-width="1.1" stroke-linejoin="round"/></svg></button>
+    </div>
+    <div class="qchips">
+      <button class="qc" onclick="qMsg('Объясни принцип суперпозиции сил')">Суперпозиция сил</button>
+      <button class="qc" onclick="qMsg('Что такое квантовая запутанность?')">Квантовая запутанность</button>
+      <button class="qc" onclick="qMsg('Как устроен ядерный реактор?')">Ядерный реактор</button>
+      <button class="qc" onclick="qMsg('Объясни теорию относительности простыми словами')">Теория относительности</button>
+      <button class="qc" onclick="qMsg('Что такое тёмная материя и тёмная энергия?')">Тёмная материя</button>
+      <button class="qc" onclick="qMsg('Как работает МРТ с точки зрения физики?')">Физика МРТ</button>
+      <button class="qc" onclick="qMsg('Объясни принцип работы лазера')">Лазер</button>
+      <button class="qc" onclick="qMsg('Почему небо голубое? Физическое объяснение')">Почему небо голубое</button>
+    </div>
+  </div>
+</section>
+<div class="divr"></div>
+
+<!-- TEACHER PANEL -->
+<section class="sec" id="teacher">
+  <div class="sh">
+    <span class="stag">Модуль 09 &nbsp;·&nbsp; <span class="badge-ai f">Dual-AI</span></span>
+    <h2 class="stitle">Панель <em>учителя</em></h2>
+  </div>
+  <div class="gp" style="padding:30px">
+    <div class="tw" id="teach-tabs">
+      <button class="tb act" onclick="showTeach('gen',this)">Создать тест</button>
+      <button class="tb" onclick="showTeach('var',this)">Варианты</button>
+      <button class="tb" onclick="showTeach('hw',this)">ДЗ</button>
+      <button class="tb" onclick="showTeach('plan',this)">План урока</button>
+      <button class="tb" onclick="showTeach('criteria',this)">Критерии</button>
+      <button class="tb" onclick="showTeach('program',this)">Программа</button>
+      <button class="tb" onclick="showTeach('dict',this)">Словарь</button>
+      <button class="tb" onclick="showTeach('presentation',this)">Презентация</button>
+    </div>
+
+    <!-- GEN TEST -->
+    <div id="teach-gen" class="tc act">
+      <div class="fr">
+        <div class="fg"><label class="fl">Класс</label><select class="fs" id="tchg"><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10" selected>10</option><option value="11">11</option></select></div>
+        <div class="fg"><label class="fl">Тема</label><select class="fs" id="tcht"><option value="кинематика">Кинематика</option><option value="динамика">Динамика</option><option value="термодинамика">Термодинамика</option><option value="электростатика">Электростатика</option><option value="электродинамика">Электродинамика</option><option value="оптика">Оптика</option><option value="квантовая">Квантовая</option></select></div>
+        <div class="fg"><label class="fl">Вопросов</label><select class="fs" id="tchq"><option value="5">5</option><option value="8">8</option><option value="10" selected>10</option><option value="15">15</option><option value="20">20</option></select></div>
+        <div class="fg"><label class="fl">Уровень</label><select class="fs" id="tchl"><option value="базовый">Базовый</option><option value="средний" selected>Средний</option><option value="продвинутый">Продвинутый</option></select></div>
+      </div>
+      <div class="fr" style="margin-bottom:16px">
+        <div class="fg"><label class="fl">Название</label><input class="fi" id="tch-name" placeholder="Контрольная работа по теме..."></div>
+        <div class="fg"><label class="fl">Дата</label><input class="fi" id="tch-date" type="date"></div>
+        <div class="fg"><label class="fl">Классы</label><input class="fi" id="tch-cls" placeholder="10А, 10Б"></div>
+      </div>
+      <button class="gbtn" onclick="teachGen()">Создать с Dual-AI</button>
+      <div class="lb" id="tch-lb"></div>
+      <div class="debate-wrap" id="tch-debate"></div>
+      <div id="tch-dl" style="display:none">
+        <div class="dl-box">
+          <div class="dl-info"><strong>Тест создан</strong>Два варианта</div>
+          <div class="dl-btns">
+            <button class="dl-btn" onclick="dlTeachTest('student')">Ученик (без ответов)</button>
+            <button class="dl-btn" onclick="dlTeachTest('teacher')">Учитель (с ответами)</button>
+            <button class="dl-btn" onclick="printTeachTest()">Печать</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- VARIANTS -->
+    <div id="teach-var" class="tc" style="display:none">
+      <div class="fr" style="margin-bottom:16px">
+        <div class="fg"><label class="fl">Класс</label><select class="fs" id="vg"><option value="9">9</option><option value="10" selected>10</option><option value="11">11</option></select></div>
+        <div class="fg"><label class="fl">Тема</label><select class="fs" id="vt"><option value="механика">Механика</option><option value="электродинамика">Электродинамика</option><option value="термодинамика">Термодинамика</option><option value="оптика">Оптика</option></select></div>
+        <div class="fg"><label class="fl">Вариантов</label><select class="fs" id="vn"><option value="2">2</option><option value="3">3</option><option value="4">4</option></select></div>
+        <div class="fg"><label class="fl">Вопросов в варианте</label><select class="fs" id="vq"><option value="5">5</option><option value="8" selected>8</option><option value="10">10</option></select></div>
+      </div>
+      <button class="gbtn" onclick="genVariants()">Создать варианты</button>
+      <div class="lb" id="v-lb"></div>
+      <div class="debate-wrap" id="v-debate"></div>
+      <div id="v-dl" style="display:none"><div class="dl-box"><div class="dl-info"><strong>Варианты готовы</strong></div><div class="dl-btns"><button class="dl-btn" onclick="dlTxt('variants')">Скачать</button><button class="dl-btn" onclick="printStr('variants')">Печать</button></div></div></div>
+    </div>
+
+    <!-- HW -->
+    <div id="teach-hw" class="tc" style="display:none">
+      <div class="fr" style="margin-bottom:16px">
+        <div class="fg"><label class="fl">Класс</label><select class="fs" id="hwg"><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10" selected>10</option><option value="11">11</option></select></div>
+        <div class="fg"><label class="fl">Тема</label><select class="fs" id="hwt"><option value="механика">Механика</option><option value="термодинамика">Термодинамика</option><option value="электродинамика">Электродинамика</option><option value="оптика">Оптика</option><option value="квантовая">Квантовая</option></select></div>
+        <div class="fg"><label class="fl">Задач</label><select class="fs" id="hwq"><option value="3">3</option><option value="5" selected>5</option><option value="7">7</option></select></div>
+        <div class="fg"><label class="fl">Срок сдачи</label><input class="fi" id="hwdate" type="date"></div>
+      </div>
+      <button class="gbtn" onclick="genHW()">Создать ДЗ</button>
+      <div class="lb" id="hw-lb"></div>
+      <div class="debate-wrap" id="hw-debate"></div>
+      <div id="hw-dl" style="display:none"><div class="dl-box"><div class="dl-info"><strong>ДЗ готово</strong></div><div class="dl-btns"><button class="dl-btn" onclick="dlTxt('hw')">Скачать</button><button class="dl-btn" onclick="printStr('hw')">Печать</button></div></div></div>
+    </div>
+
+    <!-- LESSON PLAN -->
+    <div id="teach-plan" class="tc" style="display:none">
+      <div class="fr" style="margin-bottom:16px">
+        <div class="fg"><label class="fl">Класс</label><select class="fs" id="plg"><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10" selected>10</option><option value="11">11</option></select></div>
+        <div class="fg" style="grid-column:span 2"><label class="fl">Тема урока</label><input class="fi" id="plt" placeholder="Закон сохранения импульса..."></div>
+        <div class="fg"><label class="fl">Длительность</label><select class="fs" id="pldur"><option value="45">45 мин</option><option value="90">90 мин (пара)</option></select></div>
+        <div class="fg"><label class="fl">Тип урока</label><select class="fs" id="pltype"><option value="изучение нового">Новый материал</option><option value="закрепление">Закрепление</option><option value="повторение">Повторение</option><option value="контроль">Контрольная</option></select></div>
+      </div>
+      <button class="gbtn" onclick="genPlan()">Создать технологическую карту</button>
+      <div class="lb" id="pl-lb"></div>
+      <div class="debate-wrap" id="pl-debate"></div>
+      <div id="pl-dl" style="display:none"><div class="dl-box"><div class="dl-info"><strong>План урока готов</strong></div><div class="dl-btns"><button class="dl-btn" onclick="dlTxt('plan')">Скачать</button><button class="dl-btn" onclick="printStr('plan')">Печать</button></div></div></div>
+    </div>
+
+    <!-- CRITERIA -->
+    <div id="teach-criteria" class="tc" style="display:none">
+      <div class="fr" style="margin-bottom:16px">
+        <div class="fg"><label class="fl">Тип работы</label><select class="fs" id="crtype"><option value="контрольная">Контрольная</option><option value="самостоятельная">Самостоятельная</option><option value="лабораторная">Лабораторная</option><option value="зачёт">Зачёт</option></select></div>
+        <div class="fg"><label class="fl">Макс. балл</label><select class="fs" id="crmax"><option value="10">10</option><option value="20" selected>20</option><option value="50">50</option><option value="100">100</option></select></div>
+        <div class="fg" style="grid-column:span 2"><label class="fl">Тема</label><input class="fi" id="crtheme" placeholder="Тема работы..."></div>
+      </div>
+      <button class="gbtn" onclick="genCriteria()">Создать критерии</button>
+      <div class="lb" id="cr-lb"></div>
+      <div class="debate-wrap" id="cr-debate"></div>
+      <div id="cr-dl" style="display:none"><div class="dl-box"><div class="dl-info"><strong>Критерии готовы</strong></div><div class="dl-btns"><button class="dl-btn" onclick="dlTxt('criteria')">Скачать</button><button class="dl-btn" onclick="printStr('criteria')">Печать</button></div></div></div>
+    </div>
+
+    <!-- PROGRAM -->
+    <div id="teach-program" class="tc" style="display:none">
+      <div class="fr" style="margin-bottom:16px">
+        <div class="fg"><label class="fl">Класс</label><select class="fs" id="prog-g"><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10" selected>10</option><option value="11">11</option></select></div>
+        <div class="fg"><label class="fl">Часов в неделю</label><select class="fs" id="prog-h"><option value="2">2</option><option value="3" selected>3</option><option value="4">4</option></select></div>
+        <div class="fg"><label class="fl">Четверть/Полугодие</label><select class="fs" id="prog-p"><option value="1 четверть">1 четверть</option><option value="2 четверть">2 четверть</option><option value="1 полугодие" selected>1 полугодие</option><option value="весь год">Весь год</option></select></div>
+      </div>
+      <button class="gbtn" onclick="genProgram()">Создать учебную программу</button>
+      <div class="lb" id="prog-lb"></div>
+      <div class="debate-wrap" id="prog-debate"></div>
+      <div id="prog-dl" style="display:none"><div class="dl-box"><div class="dl-info"><strong>Программа готова</strong></div><div class="dl-btns"><button class="dl-btn" onclick="dlTxt('program')">Скачать</button><button class="dl-btn" onclick="printStr('program')">Печать</button></div></div></div>
+    </div>
+
+    <!-- DICTIONARY -->
+    <div id="teach-dict" class="tc" style="display:none">
+      <div class="fr" style="margin-bottom:16px">
+        <div class="fg"><label class="fl">Раздел</label><select class="fs" id="dict-t"><option value="механика">Механика</option><option value="термодинамика">Термодинамика</option><option value="электродинамика">Электродинамика</option><option value="оптика">Оптика</option><option value="квантовая физика">Квантовая</option><option value="вся физика">Вся физика</option></select></div>
+        <div class="fg"><label class="fl">Класс</label><select class="fs" id="dict-g"><option value="7-8">7-8</option><option value="9-10" selected>9-10</option><option value="10-11">10-11</option></select></div>
+      </div>
+      <button class="gbtn" onclick="genDict()">Создать глоссарий</button>
+      <div class="lb" id="dict-lb"></div>
+      <div class="debate-wrap" id="dict-debate"></div>
+      <div id="dict-dl" style="display:none"><div class="dl-box"><div class="dl-info"><strong>Глоссарий готов</strong></div><div class="dl-btns"><button class="dl-btn" onclick="dlTxt('dict')">Скачать</button><button class="dl-btn" onclick="printStr('dict')">Печать</button></div></div></div>
+    </div>
+
+    <!-- PRESENTATION PLAN -->
+    <div id="teach-presentation" class="tc" style="display:none">
+      <div class="fr" style="margin-bottom:16px">
+        <div class="fg" style="grid-column:span 2"><label class="fl">Тема презентации</label><input class="fi" id="pres-t" placeholder="Закон сохранения энергии..."></div>
+        <div class="fg"><label class="fl">Слайдов</label><select class="fs" id="pres-n"><option value="8">8</option><option value="12" selected>12</option><option value="16">16</option><option value="20">20</option></select></div>
+        <div class="fg"><label class="fl">Класс</label><select class="fs" id="pres-g"><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10" selected>10</option><option value="11">11</option></select></div>
+      </div>
+      <button class="gbtn" onclick="genPresentation()">Создать план презентации</button>
+      <div class="lb" id="pres-lb"></div>
+      <div class="debate-wrap" id="pres-debate"></div>
+      <div id="pres-dl" style="display:none"><div class="dl-box"><div class="dl-info"><strong>План презентации готов</strong></div><div class="dl-btns"><button class="dl-btn" onclick="dlTxt('presentation')">Скачать</button><button class="dl-btn" onclick="printStr('presentation')">Печать</button></div></div></div>
+    </div>
+  </div>
+</section>
+<div class="divr"></div>
+
+<!-- DEBATE MODE -->
+<section class="sec" id="debate">
+  <div class="sh">
+    <span class="stag">Модуль 10 &nbsp;·&nbsp; <span class="badge-ai g">Gemini</span> <span style="color:var(--w4);margin:0 4px">vs</span> <span class="badge-ai o">Groq</span></span>
+    <h2 class="stitle">Дебаты <em>двух ИИ</em></h2>
+    <p class="sdesc">Задайте спорный физический вопрос — Gemini и Groq приведут аргументы, а затем синтезируют лучший ответ</p>
+  </div>
+  <div class="gp" style="padding:30px">
+    <div class="fg" style="margin-bottom:16px">
+      <label class="fl">Вопрос для дебатов</label>
+      <input class="fi" id="deb-q" placeholder="Например: Можно ли считать свет волной и частицей одновременно? Объясните корпускулярно-волновой дуализм.">
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px">
+      <button class="tc2" onclick="debPreset('Что первично — корпускулярная или волновая природа света?')">Волна vs частица</button>
+      <button class="tc2" onclick="debPreset('Является ли пространство-время реальным физическим объектом?')">Природа пространства</button>
+      <button class="tc2" onclick="debPreset('Существует ли абсолютный нуль температуры на практике?')">Абсолютный нуль</button>
+      <button class="tc2" onclick="debPreset('Почему существует стрела времени?')">Стрела времени</button>
+      <button class="tc2" onclick="debPreset('Возможно ли существование антигравитации?')">Антигравитация</button>
+    </div>
+    <button class="gbtn" onclick="startDebate()">
+      <svg viewBox="0 0 13 13" fill="none"><circle cx="4" cy="6.5" r="2.5" stroke="rgba(66,133,244,0.8)" stroke-width=".9"/><circle cx="9" cy="6.5" r="2.5" stroke="rgba(255,140,50,0.8)" stroke-width=".9"/><path d="M6.5 3V10" stroke="rgba(255,255,255,0.2)" stroke-width=".5" stroke-dasharray="1 1"/></svg>
+      Начать дебаты
+    </button>
+    <div class="lb" id="deb-lb"></div>
+    <div class="debate-wrap" id="deb-result"></div>
+  </div>
+</section>
+<div class="divr"></div>
+
+<!-- MODAL -->
+<div class="mo" id="fmod">
+  <div class="mod gp">
+    <button class="mc" onclick="closeMod()">&#215;</button>
+    <div id="mod-c"></div>
+  </div>
+</div>
+
+<footer>
+  <div class="fl2">
+    <img id="foot-logo" alt="AktronPhs">
+    <span>AktronPhs</span>
+  </div>
+  <p class="ft">Dual-AI Physics Platform &nbsp;·&nbsp; Gemini Flash + Groq LLaMA &nbsp;·&nbsp; 10 модулей &nbsp;·&nbsp; 200+ формул и законов</p>
+  <div class="dual-indicator">
+    <div class="di-gem"></div>
+    <span style="font-family:'JetBrains Mono',monospace;font-size:0.5rem;color:var(--mono);letter-spacing:.2em">GEMINI</span>
+    <span style="font-size:.4rem;color:var(--w4)">+</span>
+    <div class="di-grq"></div>
+    <span style="font-family:'JetBrains Mono',monospace;font-size:0.5rem;color:var(--mono);letter-spacing:.2em">GROQ</span>
+  </div>
+</footer>
+</div>
+<script>
+const GEMINI_KEY='AIzaSyBdIT9cxArGRJ95pJ_oBg0VWWh8TQMRaSk';
+const GEMINI_URL=`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_KEY}`;
+
+/* ===== COSMOS ===== */
+(function(){
+  const c=document.getElementById('sky'),ctx=c.getContext('2d');
+  let W,H,stars=[],nebulae=[],meteors=[],dust=[];
+  const resize=()=>{
+    W=c.width=window.innerWidth;H=c.height=window.innerHeight;
+    stars=[];nebulae=[];dust=[];
+    for(let i=0;i<600;i++){
+      const r=Math.random();
+      stars.push({x:Math.random()*W,y:Math.random()*H,
+        r:r<.55?0.25:r<.88?0.65:r<.97?1.2:2.2,
+        o:Math.random()*.9+.08,t:Math.random()*Math.PI*2,
+        s:(Math.random()-.5)*.005,blink:Math.random()<.06,
+        cx:Math.random()<.05?1:0});
+    }
+    for(let i=0;i<2000;i++){
+      dust.push({x:Math.random()*W,y:Math.random()*H,o:Math.random()*.15+.02});
+    }
+    for(let i=0;i<15;i++){
+      nebulae.push({x:Math.random()*W,y:Math.random()*H,
+        rx:Math.random()*180+60,ry:Math.random()*120+40,
+        rot:Math.random()*Math.PI*2,
+        col:Math.random()<.4?[8,18,55]:Math.random()<.5?[18,5,45]:[0,10,38],
+        o:Math.random()*.14+.03});
+    }
+  };
+  const addMeteor=()=>{
+    if(meteors.length<8&&Math.random()<.018){
+      meteors.push({x:Math.random()*W*1.5,y:-40,
+        len:Math.random()*160+80,spd:Math.random()*6+3.5,
+        o:1,w:Math.random()*.9+.2});
+    }
+  };
+  const draw=()=>{
+    ctx.clearRect(0,0,W,H);
+    nebulae.forEach(n=>{
+      ctx.save();ctx.translate(n.x,n.y);ctx.rotate(n.rot);
+      const g=ctx.createRadialGradient(0,0,0,0,0,n.rx);
+      g.addColorStop(0,`rgba(${n.col},${n.o})`);
+      g.addColorStop(1,`rgba(${n.col},0)`);
+      ctx.scale(1,n.ry/n.rx);
+      ctx.beginPath();ctx.arc(0,0,n.rx,0,Math.PI*2);
+      ctx.fillStyle=g;ctx.fill();ctx.restore();
+    });
+    dust.forEach(d=>{
+      ctx.beginPath();ctx.arc(d.x,d.y,.5,0,Math.PI*2);
+      ctx.fillStyle=`rgba(200,215,255,${d.o})`;ctx.fill();
+    });
+    stars.forEach(s=>{
+      s.t+=s.s;
+      let op=s.o*(0.5+0.5*Math.sin(s.t));
+      if(s.blink&&Math.random()<.004)op=1;
+      ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+      ctx.fillStyle=s.cx?`rgba(200,220,255,${op})`:`rgba(225,232,255,${op})`;
+      ctx.fill();
+      if(s.r>1.5){
+        const len=s.r*4;
+        ctx.strokeStyle=`rgba(210,225,255,${op*.2})`;ctx.lineWidth=.3;
+        ctx.beginPath();ctx.moveTo(s.x-len,s.y);ctx.lineTo(s.x+len,s.y);ctx.stroke();
+        ctx.beginPath();ctx.moveTo(s.x,s.y-len);ctx.lineTo(s.x,s.y+len);ctx.stroke();
+      }
+    });
+    addMeteor();
+    meteors=meteors.filter(m=>{
+      m.x-=m.spd*.45;m.y+=m.spd;m.o-=.01;
+      if(m.o<=0)return false;
+      const g=ctx.createLinearGradient(m.x,m.y,m.x+m.len*.55,m.y-m.len*.55);
+      g.addColorStop(0,'rgba(170,200,255,0)');
+      g.addColorStop(.6,`rgba(195,215,255,${m.o*.5})`);
+      g.addColorStop(1,`rgba(220,235,255,${m.o})`);
+      ctx.beginPath();ctx.moveTo(m.x,m.y);ctx.lineTo(m.x+m.len*.55,m.y-m.len*.55);
+      ctx.strokeStyle=g;ctx.lineWidth=m.w*m.o*1.2;ctx.stroke();
+      return true;
+    });
+    requestAnimationFrame(draw);
+  };
+  window.addEventListener('resize',resize);
+  resize();draw();
+  document.addEventListener('mousemove',e=>{
+    const x=(e.clientX/window.innerWidth-.5)*.012;
+    const y=(e.clientY/window.innerHeight-.5)*.012;
+    document.querySelector('.nbl').style.transform=`scale(1.04) translate(${x*100}px,${y*100}px)`;
+  });
+})();
+
+function go(id){document.getElementById(id)?.scrollIntoView({behavior:'smooth',block:'start'})}
+
+/* ===== API — только Gemini 2.0 Flash ===== */
+async function gemini(prompt, imgBase64=null){
+  const parts=[{text:prompt}];
+  if(imgBase64) parts.unshift({inline_data:{mime_type:'image/jpeg',data:imgBase64}});
+  const r=await fetch(GEMINI_URL,{
+    method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({contents:[{parts}],generationConfig:{temperature:0.72,maxOutputTokens:3000}})
+  });
+  const d=await r.json();
+  if(d.error) throw new Error(d.error.message);
+  return d.candidates[0].content.parts[0].text;
+}
+
+/* ===== DUAL AI DEBATE ENGINE ===== */
+async function dualAI(container, gemPrompt, groqPrompt, synthPrompt, imgBase64=null){
+  const wrap=document.getElementById(container);
+  wrap.className='debate-wrap show';
+  wrap.innerHTML=`
+    <div class="debate-header">
+      <span class="dh-title">4 ИИ думают параллельно...</span>
+      <div class="thinking-dots"><div class="td"></div><div class="td"></div><div class="td"></div></div>
+    </div>
+    <div class="ai-step gem" id="${container}-gem">
+      <div class="step-label"><div class="dot"></div>Gemini Flash анализирует...</div>
+      <div class="step-body" id="${container}-gem-b">...</div>
+    </div>
+    <div class="ai-step grq" id="${container}-grq">
+      <div class="step-label"><div class="dot"></div>Groq LLaMA + Mixtral анализируют...</div>
+      <div class="step-body" id="${container}-grq-b">...</div>
+    </div>
+    <div class="ai-step final" id="${container}-fin">
+      <div class="step-label"><div class="dot"></div>Groq синтезирует лучшее из 4 ИИ</div>
+      <div class="step-body" id="${container}-fin-b">Объединяем...</div>
+    </div>`;
+
+  document.getElementById(`${container}-gem`).classList.add('show');
+
+  try {
+    // Gemini 2.0 Flash: два запроса параллельно — анализ и объяснение, потом синтез
+    const [gemRes, groqRes1] = await Promise.all([
+      gemini(gemPrompt + '\n\nСтиль: академически точный, структурированный ответ.', imgBase64),
+      gemini(groqPrompt + '\n\nСтиль: педагогический, с примерами из жизни и аналогиями.')
+    ]);
+    const combinedGroq = groqRes1;
+
+    document.getElementById(`${container}-gem-b`).textContent = gemRes;
+    document.getElementById(`${container}-grq`).classList.add('show');
+    document.getElementById(`${container}-grq-b`).textContent = groqRes1;
+
+    // Синтез: Gemini объединяет оба подхода
+    document.getElementById(`${container}-fin`).classList.add('show');
+    const synthFull = synthPrompt.replace('{GEM}', gemRes).replace('{GRQ}', groqRes1);
+    const finRes = await gemini(
+      `Два подхода к объяснению:\n\nАкадемический: ${gemRes}\n\nПедагогический: ${groqRes1}\n\nЗадача: ${synthFull}\n\nСоздай ЛУЧШИЙ финальный ответ — точность первого + доступность второго. Структурированно, на русском.`
+    );
+    document.getElementById(`${container}-fin-b`).textContent = finRes;
+    document.querySelector(`#${container} .debate-header .dh-title`).textContent = '4 ИИ завершили анализ';
+    document.querySelector(`#${container} .thinking-dots`).innerHTML = '<span style="font-size:.5rem;color:rgba(100,220,130,0.7);letter-spacing:.2em;font-family:JetBrains Mono,monospace">ГОТОВО</span>';
+
+    return finRes;
+  } catch(e) {
+    document.getElementById(`${container}-fin-b`).textContent = 'Ошибка: '+e.message;
+    throw e;
+  }
+}
+
+/* ===== PHOTO ANALYSIS ===== */
+let currentImgB64 = null;
+
+function previewImg(e){
+  const file=e.target.files[0];
+  if(!file)return;
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    const img=document.getElementById('prev-img');
+    img.src=ev.target.result;img.style.display='block';
+    currentImgB64=ev.target.result.split(',')[1];
+  };
+  reader.readAsDataURL(file);
+}
+
+const uz=document.getElementById('uz');
+if(uz){
+  uz.addEventListener('dragover',e=>{e.preventDefault();uz.classList.add('dragover')});
+  uz.addEventListener('dragleave',()=>uz.classList.remove('dragover'));
+  uz.addEventListener('drop',e=>{
+    e.preventDefault();uz.classList.remove('dragover');
+    const f=e.dataTransfer.files[0];
+    if(f){document.getElementById('visfile').files=e.dataTransfer.files;previewImg({target:{files:[f]}});}
+  });
+}
+
+async function analyzePhoto(){
+  if(!currentImgB64){alert('Загрузите фото задачи');return;}
+  const g=document.getElementById('vis-g').value;
+  const action=document.getElementById('vis-action').value;
+  const mode=document.getElementById('vis-mode').value;
+  const ctx2=document.getElementById('vis-ctx').value;
+  const lb=document.getElementById('vis-lb'),btn=document.getElementById('vis-btn');
+  btn.disabled=true;lb.classList.add('on');
+  document.getElementById('vis-result').classList.remove('show');
+
+  const actions={
+    explain:'объясни метод решения без числового ответа, укажи применимые законы и формулы',
+    recognize:'распознай текст задачи, запиши условие в структурированном виде: Дано / Найти',
+    hint:'дай только первую маленькую подсказку — направление мысли',
+    theory:'объясни теоретическую базу для решения этой задачи',
+    check:'проверь правильность хода решения если оно показано',
+    full:'полностью разбери задачу пошагово, но НЕ называй числовой ответ'
+  };
+
+  const basePrompt=`Это фото физической задачи для ${g} класса.${ctx2?' Контекст: '+ctx2+'.':''} Пожалуйста: ${actions[action]}. Отвечай на русском языке подробно и понятно для школьника.`;
+
+  try {
+    if(mode==='dual'){
+      const synth=`Gemini проанализировал фото задачи: {GEM}\n\nGroq добавил: {GRQ}\n\nСинтезируй лучшее объяснение, объединив оба подхода. Сделай его максимально понятным для школьника ${g} класса. Используй чёткую структуру.`;
+      await dualAI('vis-debate', basePrompt, `Физическая задача для ${g} класса. ${actions[action]}. Представь что ты видишь стандартную школьную задачу по физике.`, synth, currentImgB64);
+    } else {
+      const res=await gemini(basePrompt, currentImgB64);
+      document.getElementById('vis-final').textContent=res;
+      document.getElementById('vis-result').classList.add('show');
+    }
+  } catch(e) {
+    document.getElementById('vis-final').textContent='Ошибка: '+e.message;
+    document.getElementById('vis-result').classList.add('show');
+  }
+  btn.disabled=false;lb.classList.remove('on');
+}
+
+/* ===== STORE ===== */
+const S={tasks:'',variants:'',hw:'',plan:'',criteria:'',program:'',dict:'',presentation:'',test:null,testName:'',tchTest:null};
+
+/* ===== GENERATE TASKS ===== */
+async function genTasks(){
+  const g=document.getElementById('tg').value,lv=document.getElementById('tlv').value;
+  const t=document.getElementById('tt').value,n=document.getElementById('tc').value;
+  const ty=document.getElementById('ttype').value,ct=document.getElementById('tctx').value;
+  const ex=document.getElementById('tex').value;
+  const btn=document.getElementById('t-btn'),lb=document.getElementById('t-lb');
+  btn.disabled=true;lb.classList.add('on');
+  document.getElementById('t-dl').style.display='none';
+
+  const base=`Создай ${n} ${ty} задач по теме "${t}" для ${g} класса, уровень ${lv}${ct?', контекст: '+ct:''}${ex?'. '+ex:''}. Только условия без решений. Нумеруй задачи. К каждой: Дано / Найти.`;
+  const synth=`Gemini предложил задачи: {GEM}\n\nGroq предложил: {GRQ}\n\nОтбери и объедини лучшие ${n} задач из обоих наборов. Исправь недочёты. Итог: чётко структурированные, физически корректные задачи. Формат: номер, условие, Дано, Найти.`;
+
+  try {
+    const res = await dualAI('t-debate', base, base, synth);
+    S.tasks=`Задачи по физике — ${t}, ${g} класс\n${'─'.repeat(40)}\n\n${res}`;
+    document.getElementById('t-dl').style.display='block';
+  } catch(e){}
+  btn.disabled=false;lb.classList.remove('on');
+}
+
+/* ===== TESTS ===== */
+let TQ=[],TCI=0,TSC=0,TANS=false;
+
+async function startTest(){
+  const g=document.getElementById('tstg').value,l=document.getElementById('tstl').value;
+  const t=document.getElementById('tstt').value,q=document.getElementById('tstq').value;
+  const ty=document.getElementById('tsttype').value;
+  S.testName=document.getElementById('tstname').value||`Тест "${t}"`;
+  const lb=document.getElementById('testload');
+  lb.classList.add('on');
+  document.getElementById('test-setup').style.opacity='.35';
+  document.getElementById('test-result').innerHTML='';
+  document.getElementById('test-dl').style.display='none';
+  try {
+    const raw=await gemini(`Создай ${q} тестовых вопросов по физике (${t}), ${g} класс, ${l}, тип: ${ty}. Верни ТОЛЬКО JSON без markdown: [{"q":"вопрос","opts":["A) ...","B) ...","C) ...","D) ..."],"ans":0,"exp":"объяснение"}]. ans — индекс правильного (0-3).`);
+    TQ=JSON.parse(raw.replace(/```json|```/g,'').trim());
+    TCI=0;TSC=0;TANS=false;
+    document.getElementById('test-setup').style.opacity='1';lb.classList.remove('on');
+    document.getElementById('test-active').style.display='block';
+    renderQ();
+  } catch(e){
+    lb.classList.remove('on');document.getElementById('test-setup').style.opacity='1';
+    document.getElementById('test-result').innerHTML=`<p style="color:rgba(220,80,80,.7);font-size:.78rem;margin-top:12px">Ошибка: ${e.message}</p>`;
+  }
+}
+
+function renderQ(){
+  if(TCI>=TQ.length){showRes();return;}
+  const q=TQ[TCI],tot=TQ.length;TANS=false;
+  document.getElementById('tprog-l').textContent=`Вопрос ${TCI+1} / ${tot}`;
+  document.getElementById('tscore-l').textContent=`${TSC} / ${TCI}`;
+  document.getElementById('tpf').style.width=(TCI/tot*100)+'%';
+  document.getElementById('tafb').className='afb';
+  document.getElementById('tnxt').style.display='none';
+  const L=['A','B','C','D'];
+  document.getElementById('tqa').innerHTML=`
+    <div class="tk" style="margin-bottom:16px"><div class="tk-n">ВОПРОС ${TCI+1}</div><div class="tk-t">${q.q}</div></div>
+    ${q.opts.map((o,i)=>`<div class="to" id="to${i}" onclick="pick(${i})"><div class="ol">${L[i]}</div><div>${o}</div></div>`).join('')}`;
+}
+
+function pick(idx){
+  if(TANS)return;TANS=true;
+  const q=TQ[TCI],c=q.ans,fb=document.getElementById('tafb');
+  document.querySelectorAll('.to').forEach((el,i)=>{
+    el.style.pointerEvents='none';
+    if(i===c)el.classList.add('cor');
+    else if(i===idx&&idx!==c)el.classList.add('wrg');
+  });
+  if(idx===c){TSC++;fb.className='afb show c';fb.textContent='Верно! '+q.exp;}
+  else{fb.className='afb show w';fb.textContent='Неверно. Правильный ответ: '+['A','B','C','D'][c]+'. '+q.exp;}
+  document.getElementById('tnxt').style.display='flex';
+}
+function nextQ(){TCI++;renderQ();}
+function showRes(){
+  document.getElementById('test-active').style.display='none';
+  const pct=Math.round(TSC/TQ.length*100);
+  const gr=pct>=90?'Отлично':pct>=70?'Хорошо':pct>=50?'Удовлетворительно':'Нужно повторить';
+  document.getElementById('test-result').innerHTML=`<div class="rsum"><div class="rscore">${TSC}/${TQ.length}</div><div class="rlbl">${gr} &nbsp;·&nbsp; ${pct}%</div><button class="btn-s" style="margin-top:20px" onclick="resetTest()">Ещё раз</button></div>`;
+  document.getElementById('test-dl').style.display='block';
+}
+function resetTest(){document.getElementById('test-result').innerHTML='';document.getElementById('test-dl').style.display='none';document.getElementById('test-setup').style.opacity='1';}
+
+/* ===== EXPLAIN ===== */
+async function explainTask(){
+  const g=document.getElementById('eg').value,ty=document.getElementById('ety').value;
+  const st=document.getElementById('estyle').value;
+  const prob=document.getElementById('eprob').value.trim();
+  if(!prob){alert('Введите условие задачи');return;}
+  const lb=document.getElementById('e-lb');lb.classList.add('on');
+  const base=`Задача для ${g} класса: "${prob}"\n\nЗадание: ${ty}, стиль: ${st}. НИКОГДА не давай числовой ответ. Укажи физические законы, формулы, направление рассуждений.`;
+  const synth=`Gemini объяснил: {GEM}\n\nGroq объяснил: {GRQ}\n\nСоздай лучшее объяснение, взяв самое понятное из обоих. Структура: 1) Физическая суть 2) Нужные законы и формулы 3) Метод решения (без ответа). Стиль: ${st}.`;
+  try { await dualAI('e-debate',base,base,synth); } catch(e){}
+  lb.classList.remove('on');
+}
+
+/* ===== CALCULATOR ===== */
+function calcPreset(expr){document.getElementById('calc-expr').value=expr;}
+async function calcAI(){
+  const expr=document.getElementById('calc-expr').value.trim();
+  const ctx2=document.getElementById('calc-ctx').value;
+  if(!expr){alert('Введите выражение');return;}
+  const lb=document.getElementById('calc-lb');lb.classList.add('on');
+  const base=`Физическая задача/формула: "${expr}"${ctx2?'. Дополнительно: '+ctx2:''}. Вычисли результат пошагово, проверь единицы измерения, объясни физический смысл. Отвечай на русском.`;
+  const synth=`Gemini вычислил: {GEM}\n\nGroq вычислил: {GRQ}\n\nПредставь итоговый ответ: числовой результат с единицами, краткое объяснение, проверка размерности.`;
+  try { await dualAI('calc-debate',base,base,synth); } catch(e){}
+  lb.classList.remove('on');
+}
+
+/* ===== CHAT ===== */
+let CH=[];
+async function sendMsg(){
+  const i=document.getElementById('chin'),m=i.value.trim();
+  if(!m)return;i.value='';
+  addMsg('u',m);CH.push({role:'user',content:m});
+  const bubble=addMsg('ai','...');
+  try{
+    const his=CH.map(x=>x.content).join('\n');
+    const[gRes,grRes1]=await Promise.all([
+      gemini(`Физика-вопрос: ${m}\n\nКонтекст предыдущих сообщений: ${his}\n\nОтвечай как физик-эксперт, точно и структурированно. НЕ решай задачи за ученика. На русском.`),
+      gemini(`Вопрос по физике: ${m}\n\nОбъясни как педагог — с аналогиями, примерами из жизни, доступно для школьника. На русском.`)
+    ]);
+    const synth=await gemini(
+      `Два объяснения вопроса "${m}":\n\nЭкспертное: ${gRes}\n\nПедагогическое: ${grRes1}\n\nОбъедини в один идеальный ответ: точность первого + понятность второго. Лаконично. На русском.`
+    );
+    bubble.textContent=synth;CH.push({role:'assistant',content:synth});
+  }catch(e){bubble.textContent='Ошибка: '+e.message;}
+  document.getElementById('chatm').scrollTop=9999;
+}
+function qMsg(m){document.getElementById('chin').value=m;sendMsg();go('chat');}
+function addMsg(role,text){
+  const c=document.getElementById('chatm'),d=document.createElement('div');
+  d.className='msg '+role;
+  const av=role==='ai'?`<svg viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="5" stroke="rgba(200,215,240,0.5)" stroke-width=".8"/><circle cx="7" cy="7" r="1.8" fill="rgba(200,215,240,0.3)"/></svg>`
+    :`<svg viewBox="0 0 14 14" fill="none"><circle cx="7" cy="4.5" r="2.5" stroke="rgba(180,195,225,0.45)" stroke-width=".8"/><path d="M1.5 13c0-3.5 11-3.5 11 0" stroke="rgba(180,195,225,0.45)" stroke-width=".8"/></svg>`;
+  d.innerHTML=`<div class="mav">${av}</div><div class="mb">${text}</div>`;
+  c.appendChild(d);c.scrollTop=c.scrollHeight;
+  return d.querySelector('.mb');
+}
+
+/* ===== DEBATE ===== */
+function debPreset(q){document.getElementById('deb-q').value=q;}
+async function startDebate(){
+  const q=document.getElementById('deb-q').value.trim();
+  if(!q){alert('Введите вопрос для дебатов');return;}
+  const lb=document.getElementById('deb-lb');lb.classList.add('on');
+  const gPrompt=`Физический вопрос для дебатов: "${q}". Дай развёрнутый аргументированный ответ с позиции классической физики. На русском. Структурно, с примерами.`;
+  const grPrompt=`Физический вопрос: "${q}". Дай ответ с позиции современной физики и квантовой механики, если применимо. Укажи где классика расходится с современным пониманием. На русском.`;
+  const synth=`Gemini (классическая физика): {GEM}\n\nGroq (современная физика): {GRQ}\n\nСинтезируй: в чём правы оба, где расходятся, каков современный консенсус. Финальный ответ должен быть энциклопедически точным и ёмким.`;
+  try { await dualAI('deb-result',gPrompt,grPrompt,synth); } catch(e){}
+  lb.classList.remove('on');
+}
+
+/* ===== TEACHER PANEL ===== */
+function showTeach(id,btn){
+  document.querySelectorAll('#teach-tabs .tb').forEach(b=>b.classList.remove('act'));
+  btn.classList.add('act');
+  ['gen','var','hw','plan','criteria','program','dict','presentation'].forEach(n=>{
+    const el=document.getElementById('teach-'+n);
+    if(el){el.style.display=n===id?'block':'none';el.classList.toggle('act',n===id);}
+  });
+}
+
+async function teachGen(){
+  const g=document.getElementById('tchg').value,t=document.getElementById('tcht').value;
+  const q=document.getElementById('tchq').value,l=document.getElementById('tchl').value;
+  const name=document.getElementById('tch-name').value||`Контрольная "${t}"`;
+  const date=document.getElementById('tch-date').value,cls=document.getElementById('tch-cls').value;
+  const lb=document.getElementById('tch-lb');lb.classList.add('on');
+  document.getElementById('tch-dl').style.display='none';
+  const base=`Создай ${q} тестовых вопросов (тест "${name}"${cls?' для класса '+cls:''}) по теме "${t}", ${g} класс, уровень ${l}${date?', дата '+date:''}. Верни ТОЛЬКО JSON: [{"q":"...","opts":["A)...","B)...","C)...","D)..."],"ans":0,"exp":"..."}].`;
+  try{
+    const raw=await gemini(base);
+    S.tchTest=JSON.parse(raw.replace(/```json|```/g,'').trim());
+    S.testName=name;
+    const L=['A','B','C','D'];
+    let prev=`${name}\n${'─'.repeat(40)}\n\n`;
+    S.tchTest.forEach((q2,i)=>{prev+=`${i+1}. ${q2.q}\n`;q2.opts.forEach(o=>prev+=`   ${o}\n`);prev+=`   [Ответ: ${L[q2.ans]}] ${q2.exp}\n\n`;});
+    const wrap=document.getElementById('tch-debate');
+    wrap.className='debate-wrap show';
+    wrap.innerHTML=`<div class="ai-step final show"><div class="step-label"><div class="dot"></div>Тест создан — предпросмотр</div><div class="step-body">${prev}</div></div>`;
+    document.getElementById('tch-dl').style.display='block';
+  }catch(e){
+    const wrap=document.getElementById('tch-debate');
+    wrap.className='debate-wrap show';
+    wrap.innerHTML=`<div class="ai-step wrg show"><div class="step-body">Ошибка: ${e.message}</div></div>`;
+  }
+  lb.classList.remove('on');
+}
+
+async function genVariants(){
+  const g=document.getElementById('vg').value,t=document.getElementById('vt').value;
+  const n=document.getElementById('vn').value,q=document.getElementById('vq').value;
+  const lb=document.getElementById('v-lb');lb.classList.add('on');
+  document.getElementById('v-dl').style.display='none';
+  const base=`Создай ${n} варианта теста по теме "${t}" для ${g} класса, по ${q} вопросов в каждом. Варианты должны отличаться — разные вопросы, одинаковая сложность. Пронумеруй варианты и вопросы.`;
+  const synth=`Gemini создал варианты: {GEM}\n\nGroq создал варианты: {GRQ}\n\nОтбери лучшие ${n} варианта, объедини. Убедись что вопросы не повторяются между вариантами.`;
+  try{ const res=await dualAI('v-debate',base,base,synth);S.variants=res;document.getElementById('v-dl').style.display='block';}catch(e){}
+  lb.classList.remove('on');
+}
+
+async function genHW(){
+  const g=document.getElementById('hwg').value,t=document.getElementById('hwt').value;
+  const q=document.getElementById('hwq').value,date=document.getElementById('hwdate').value;
+  const lb=document.getElementById('hw-lb');lb.classList.add('on');
+  document.getElementById('hw-dl').style.display='none';
+  const base=`Домашнее задание для ${g} класса по теме "${t}", ${q} задач${date?', срок: '+date:''}. Задачи должны быть посильными, разнообразными. Формат: номер, условие, Дано, Найти.`;
+  try{ const res=await dualAI('hw-debate',base,base,`Gemini: {GEM}\nGroq: {GRQ}\nОтбери лучшие ${q} задач для ДЗ. Убедись в правильности условий.`);S.hw=res;document.getElementById('hw-dl').style.display='block';}catch(e){}
+  lb.classList.remove('on');
+}
+
+async function genPlan(){
+  const g=document.getElementById('plg').value,t=document.getElementById('plt').value;
+  const dur=document.getElementById('pldur').value,type=document.getElementById('pltype').value;
+  if(!t){alert('Введите тему');return;}
+  const lb=document.getElementById('pl-lb');lb.classList.add('on');
+  document.getElementById('pl-dl').style.display='none';
+  const base=`Технологическая карта урока: тема "${t}", ${g} класс, ${dur} мин, тип урока: ${type}. Структура: цели, планируемые результаты, оборудование, этапы урока с хронометражем, методы, ДЗ.`;
+  try{ const res=await dualAI('pl-debate',base,base,`Gemini: {GEM}\nGroq: {GRQ}\nСоздай итоговую технологическую карту урока, объединив лучшее. Добавь интересные методические приёмы.`);S.plan=res;document.getElementById('pl-dl').style.display='block';}catch(e){}
+  lb.classList.remove('on');
+}
+
+async function genCriteria(){
+  const ty=document.getElementById('crtype').value,max=document.getElementById('crmax').value;
+  const th=document.getElementById('crtheme').value;
+  const lb=document.getElementById('cr-lb');lb.classList.add('on');
+  document.getElementById('cr-dl').style.display='none';
+  const base=`Критерии оценивания: ${ty}${th?' по теме: '+th:''}, максимум ${max} баллов. Шкала оценок, критерии за каждый балл, типичные ошибки.`;
+  try{ const res=await dualAI('cr-debate',base,base,`Gemini: {GEM}\nGroq: {GRQ}\nИтоговые критерии: чёткие, справедливые, понятные ученикам и родителям.`);S.criteria=res;document.getElementById('cr-dl').style.display='block';}catch(e){}
+  lb.classList.remove('on');
+}
+
+async function genProgram(){
+  const g=document.getElementById('prog-g').value,h=document.getElementById('prog-h').value;
+  const p=document.getElementById('prog-p').value;
+  const lb=document.getElementById('prog-lb');lb.classList.add('on');
+  document.getElementById('prog-dl').style.display='none';
+  const base=`Учебная программа по физике: ${g} класс, ${h} часов/неделю, период: ${p}. Тематический план: темы, часы, контрольные точки.`;
+  try{ const res=await dualAI('prog-debate',base,base,`Gemini: {GEM}\nGroq: {GRQ}\nИтоговая программа с календарным планированием.`);S.program=res;document.getElementById('prog-dl').style.display='block';}catch(e){}
+  lb.classList.remove('on');
+}
+
+async function genDict(){
+  const t=document.getElementById('dict-t').value,g=document.getElementById('dict-g').value;
+  const lb=document.getElementById('dict-lb');lb.classList.add('on');
+  document.getElementById('dict-dl').style.display='none';
+  const base=`Глоссарий физических терминов: раздел "${t}", классы ${g}. Для каждого термина: определение, единицы измерения, формула (если есть), пример.`;
+  try{ const res=await dualAI('dict-debate',base,base,`Gemini: {GEM}\nGroq: {GRQ}\nИтоговый глоссарий — объедини и дополни.`);S.dict=res;document.getElementById('dict-dl').style.display='block';}catch(e){}
+  lb.classList.remove('on');
+}
+
+async function genPresentation(){
+  const t=document.getElementById('pres-t').value,n=document.getElementById('pres-n').value;
+  const g=document.getElementById('pres-g').value;
+  if(!t){alert('Введите тему');return;}
+  const lb=document.getElementById('pres-lb');lb.classList.add('on');
+  document.getElementById('pres-dl').style.display='none';
+  const base=`План презентации по физике: тема "${t}", ${g} класс, ${n} слайдов. Для каждого слайда: заголовок, ключевые тезисы, рекомендуемые изображения/схемы, формулы.`;
+  try{ const res=await dualAI('pres-debate',base,base,`Gemini: {GEM}\nGroq: {GRQ}\nИтоговый детальный план презентации.`);S.presentation=res;document.getElementById('pres-dl').style.display='block';}catch(e){}
+  lb.classList.remove('on');
+}
+
+/* ===== DOWNLOAD / PRINT ===== */
+function dlTxt(type){
+  const m={tasks:S.tasks,variants:S.variants,hw:S.hw,plan:S.plan,criteria:S.criteria,program:S.program,dict:S.dict,presentation:S.presentation};
+  const txt=m[type]||'';if(!txt)return;
+  const a=document.createElement('a');
+  a.href='data:text/plain;charset=utf-8,'+encodeURIComponent(`AktronPhs Dual-AI\n${'═'.repeat(40)}\n\n${txt}`);
+  a.download=`AktronPhs_${type}_${new Date().toLocaleDateString('ru')}.txt`;a.click();
+}
+
+function dlHTML(type){
+  const m={tasks:S.tasks};const raw=m[type]||'';
+  const h=`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>AktronPhs</title><style>body{font-family:Arial,sans-serif;max-width:800px;margin:40px auto;color:#111;line-height:1.8}h2{border-bottom:2px solid #333;padding-bottom:8px}pre{white-space:pre-wrap;font-size:.9rem}</style></head><body><h2>AktronPhs — ${type}</h2><pre>${raw}</pre></body></html>`;
+  const a=document.createElement('a');
+  a.href='data:text/html;charset=utf-8,'+encodeURIComponent(h);
+  a.download=`AktronPhs_${type}.html`;a.click();
+}
+
+function printStr(type){
+  const m={tasks:S.tasks,variants:S.variants,hw:S.hw,plan:S.plan,criteria:S.criteria,program:S.program,dict:S.dict,presentation:S.presentation};
+  const raw=m[type]||'';
+  const w=window.open('','_blank');
+  if(!w){alert('Разрешите всплывающие окна');return;}
+  w.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><style>body{font-family:'Times New Roman',serif;max-width:800px;margin:30px auto;line-height:1.8;font-size:12pt}pre{white-space:pre-wrap;font-family:inherit}@media print{@page{margin:2cm}}</style></head><body><pre>${raw}</pre><script>setTimeout(()=>window.print(),300);<\/script></body></html>`);
+}
+
+function dlTest(v){
+  if(!S.test)return;
+  const L=['A','B','C','D'],wa=v==='teacher';
+  let txt=`${S.testName}\nAktronPhs Dual-AI\n${'─'.repeat(40)}\n\n`;
+  S.test.forEach((q,i)=>{txt+=`${i+1}. ${q.q}\n`;q.opts.forEach((o,j)=>{txt+=`   ${o}${wa&&j===q.ans?' [ОТВЕТ]':''}\n`;});if(wa)txt+=`   Пояснение: ${q.exp}\n`;txt+='\n';});
+  if(wa){txt+=`${'─'.repeat(40)}\nКЛЮЧ:\n`;S.test.forEach((q,i)=>txt+=`${i+1}: ${L[q.ans]}\n`);}
+  const a=document.createElement('a');
+  a.href='data:text/plain;charset=utf-8,'+encodeURIComponent(txt);
+  a.download=`test_${v}.txt`;a.click();
+}
+
+function printTest(){
+  if(!S.test)return;
+  const L=['A','B','C','D'];
+  let body=`<h2>${S.testName}</h2><hr>`;
+  S.test.forEach((q,i)=>{body+=`<p><b>${i+1}. ${q.q}</b></p><ul>`;q.opts.forEach(o=>body+=`<li>${o}</li>`);body+='</ul>';});
+  const w=window.open('','_blank');if(!w)return;
+  w.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><style>body{font-family:Arial;max-width:750px;margin:30px auto;line-height:1.6;font-size:11pt}ul{margin:.3em 0}@media print{@page{margin:2cm}}</style></head><body>${body}<script>setTimeout(()=>window.print(),300);<\/script></body></html>`);
+}
+
+function dlTeachTest(v){S.test=S.tchTest;dlTest(v);}
+function printTeachTest(){S.test=S.tchTest;printTest();}
+
+/* ===== FORMULAS DATA ===== */
+const FM=[
+  {sym:'v = v₀ + at',name:'Кинематика: скорость',desc:'При равноускоренном движении.',tag:'mech',detail:'v — скорость (м/с), v₀ — начальная, a — ускорение (м/с²), t — время (с).'},
+  {sym:'s = v₀t + at²/2',name:'Кинематика: путь',desc:'Перемещение при равноускорении.',tag:'mech',detail:'Для свободного падения: a=g≈9,81 м/с². Без нач. скорости: s=gt²/2.'},
+  {sym:'v² = v₀² + 2as',name:'Скорость через путь',desc:'Без времени.',tag:'mech',detail:'Выводится из уравнений кинематики. Удобна когда время не задано.'},
+  {sym:'F = ma',name:'2-й закон Ньютона',desc:'Сила = масса × ускорение.',tag:'mech',detail:'F(Н), m(кг), a(м/с²). Векторное уравнение. 1Н=1кг·м/с².'},
+  {sym:'p = mv',name:'Импульс тела',desc:'Мера количества движения.',tag:'mech',detail:'p(кг·м/с). Вектор. Закон сохранения импульса — фундаментальный.'},
+  {sym:'E_k = mv²/2',name:'Кинетическая энергия',desc:'Энергия движущегося тела.',tag:'mech',detail:'Скаляр. ΔE_k = A (теорема о кинетической энергии).'},
+  {sym:'E_p = mgh',name:'Потенциальная энергия',desc:'В поле тяжести.',tag:'mech',detail:'g≈9,81 м/с². Зависит от выбора нулевого уровня.'},
+  {sym:'W = Fs cos α',name:'Работа силы',desc:'Мера воздействия силы.',tag:'mech',detail:'W(Дж). При α=90° A=0. 1Дж=1Н·м.'},
+  {sym:'P = W/t = Fv',name:'Мощность',desc:'Работа в единицу времени.',tag:'mech',detail:'P(Вт). 1кВт=1000Вт. КПД: η=A_пол/A_полн.'},
+  {sym:'F = −kx',name:'Закон Гука',desc:'Упругая деформация.',tag:'mech',detail:'k(Н/м) — жёсткость. E_упр=kx²/2.'},
+  {sym:'F = GMm/r²',name:'Закон тяготения',desc:'Сила притяжения тел.',tag:'mech',detail:'G=6,67·10⁻¹¹ Н·м²/кг². g=GM/R².'},
+  {sym:'T = 2π√(L/g)',name:'Маятник нитяной',desc:'Период колебаний.',tag:'mech',detail:'Не зависит от массы и амплитуды (малые углы).'},
+  {sym:'T = 2π√(m/k)',name:'Маятник пружинный',desc:'Период колебаний.',tag:'mech',detail:'ω=√(k/m). Не зависит от амплитуды.'},
+  {sym:'a_ц = v²/r',name:'Центростремит. ускорение',desc:'При движении по окружности.',tag:'mech',detail:'F_ц=mv²/r. Направлена к центру.'},
+  {sym:'Q = mcΔT',name:'Количество теплоты',desc:'При нагревании.',tag:'thermo',detail:'c — удельная теплоёмкость. c(воды)=4200 Дж/(кг·К).'},
+  {sym:'pV = νRT',name:'Уравнение газа (Менделеева)',desc:'Идеальный газ.',tag:'thermo',detail:'R=8,314 Дж/(моль·К). T(К)=T(°C)+273.'},
+  {sym:'ΔU = Q − A',name:'1-е начало термодинамики',desc:'Закон сохранения для газа.',tag:'thermo',detail:'ΔU — внутренняя энергия, Q — теплота, A — работа газа.'},
+  {sym:'η = 1 − T₂/T₁',name:'КПД цикла Карно',desc:'Максимальный КПД.',tag:'thermo',detail:'T₁ — нагреватель, T₂ — холодильник (абсолютные). η<1 всегда.'},
+  {sym:'p₁V₁/T₁ = p₂V₂/T₂',name:'Объединённый газовый закон',desc:'Для данной массы газа.',tag:'thermo',detail:'Изотерма: p₁V₁=p₂V₂. Изобара: V/T=const. Изохора: p/T=const.'},
+  {sym:'F = kq₁q₂/r²',name:'Закон Кулона',desc:'Сила между зарядами.',tag:'electro',detail:'k=9·10⁹ Н·м²/Кл². Аналог закона тяготения.'},
+  {sym:'E = kQ/r²',name:'Напряжённость поля',desc:'Характеристика поля.',tag:'electro',detail:'E(В/м). Для равном. поля: E=U/d.'},
+  {sym:'U = IR',name:'Закон Ома',desc:'Для участка цепи.',tag:'electro',detail:'Для полной: I=ε/(R+r). Нелинейные элементы не подчиняются.'},
+  {sym:'P = UI = I²R',name:'Мощность тока',desc:'Три формулы.',tag:'electro',detail:'Q=I²Rt — закон Джоуля-Ленца.'},
+  {sym:'F = qvB sin α',name:'Сила Лоренца',desc:'На движущийся заряд в поле.',tag:'electro',detail:'Правило левой руки. Основа циклотрона.'},
+  {sym:'F = BIl sin α',name:'Сила Ампера',desc:'На проводник с током.',tag:'electro',detail:'Основа электромоторов.'},
+  {sym:'ε = −ΔΦ/Δt',name:'Закон Фарадея (ЭМИ)',desc:'ЭДС индукции.',tag:'electro',detail:'Правило Ленца: минус. Основа генераторов.'},
+  {sym:'n = c/v = sin α/sin β',name:'Показатель преломления',desc:'Оптическая плотность.',tag:'optics',detail:'c=3·10⁸ м/с. Закон Снеллиуса.'},
+  {sym:'1/f = 1/d + 1/d\'',name:'Формула линзы',desc:'Тонкая линза.',tag:'optics',detail:'D=1/f (дптр). Увеличение: Г=d\'/d.'},
+  {sym:'c = λν',name:'Скорость волны',desc:'Связь λ и ν.',tag:'optics',detail:'λ(м), ν(Гц). Видимый свет: λ≈400-700нм.'},
+  {sym:'E = hν',name:'Энергия фотона',desc:'Квант излучения.',tag:'quantum',detail:'h=6,626·10⁻³⁴ Дж·с. E=hc/λ.'},
+  {sym:'E = mc²',name:'Масса-энергия (Эйнштейн)',desc:'Эквивалентность.',tag:'quantum',detail:'c≈3·10⁸ м/с. Основа ядерной энергетики.'},
+  {sym:'λ = h/mv',name:'Волна де Бройля',desc:'Корпускулярно-волновой дуализм.',tag:'quantum',detail:'Любая частица — волна. Основа квантовой механики.'},
+  {sym:'ΔxΔp ≥ ℏ/2',name:'Принцип Гейзенберга',desc:'Неопределённость.',tag:'quantum',detail:'Фундаментальный предел точности. ℏ=h/2π.'},
+  {sym:'N = N₀·(½)^(t/T)',name:'Радиоактивный распад',desc:'Убывание атомов.',tag:'nuclear',detail:'T — период полураспада. Статистический закон.'},
+  {sym:'E_св = Δm·c²',name:'Энергия связи ядра',desc:'Дефект масс.',tag:'nuclear',detail:'Δm=масса частиц−масса ядра. E_св>0 означает стабильность.'},
+  {sym:'v = λ/T = λν',name:'Скорость волны',desc:'Волновое соотношение.',tag:'waves',detail:'T — период (с), ν — частота (Гц).'},
+  {sym:'x = A cos(ωt+φ₀)',name:'Гармоническое колебание',desc:'Закон изменения координаты.',tag:'waves',detail:'A — амплитуда, ω — циклическая частота.'},
+];
+
+const LAWS=[
+  {name:'1-й закон Ньютона (инерция)',sym:'v = const при ΣF = 0',tag:'mech',desc:'Тело в покое или равном. движении при нулевой равнодействующей.',detail:'Инерциальные системы отсчёта. Масса — мера инерции.'},
+  {name:'2-й закон Ньютона',sym:'F = ma',tag:'mech',desc:'Ускорение пропорционально силе, обратно пропорционально массе.',detail:'F⃗=dp⃗/dt. При v≪c это F=ma.'},
+  {name:'3-й закон Ньютона',sym:'F₁₂ = −F₂₁',tag:'mech',desc:'Действие равно противодействию. Силы к разным телам.',detail:'Не уравновешивают — приложены к разным телам.'},
+  {name:'Закон сохранения импульса',sym:'Σp = const',tag:'mech',desc:'В замкнутой системе суммарный импульс постоянен.',detail:'Следствие 3-го закона Ньютона. Применим при ударах, взрывах.'},
+  {name:'Закон сохранения энергии',sym:'E_k + E_p = const',tag:'mech',desc:'При консервативных силах полная мех. энергия сохраняется.',detail:'Диссипативные силы (трение) уменьшают мех. энергию → тепло.'},
+  {name:'Закон всемирного тяготения',sym:'F = GMm/r²',tag:'mech',desc:'Тела притягиваются с силой пропорц. массам, обратно r².',detail:'G=6,67·10⁻¹¹. Объясняет орбиты планет, приливы.'},
+  {name:'1-е начало термодинамики',sym:'ΔU = Q − A',tag:'thermo',desc:'Теплота идёт на внутреннюю энергию и работу.',detail:'Вечный двигатель 1-го рода невозможен.'},
+  {name:'2-е начало термодинамики',sym:'ΔS ≥ 0',tag:'thermo',desc:'Тепло самопроизвольно от горячего к холодному. Энтропия растёт.',detail:'Вечный двигатель 2-го рода невозможен. КПД<КПД Карно.'},
+  {name:'Закон Кулона',sym:'F = kq₁q₂/r²',tag:'electro',desc:'Сила между зарядами.',detail:'Принцип суперпозиции: поля складываются.'},
+  {name:'Закон Ома',sym:'I = U/R',tag:'electro',desc:'Ток пропорц. напряжению, обратно пропорц. сопротивлению.',detail:'Для линейных элементов при постоянной температуре.'},
+  {name:'Закон Фарадея',sym:'ε = −ΔΦ/Δt',tag:'electro',desc:'ЭДС индукции пропорциональна скорости изменения потока.',detail:'Правило Ленца. Основа генераторов и трансформаторов.'},
+  {name:'Закон Джоуля-Ленца',sym:'Q = I²Rt',tag:'electro',desc:'Теплота при прохождении тока.',detail:'Q=I²Rt=U²t/R=UIt. Нагревательные приборы.'},
+  {name:'Закон отражения',sym:'α = β',tag:'optics',desc:'Угол падения равен углу отражения.',detail:'Падающий, отражённый луч и нормаль — в одной плоскости.'},
+  {name:'Закон Снеллиуса',sym:'n₁ sin α = n₂ sin β',tag:'optics',desc:'Преломление на границе сред.',detail:'При α>α_крит — полное внутреннее отражение. Основа оптоволокна.'},
+  {name:'Закон фотоэффекта (Эйнштейн)',sym:'hν = A + E_k',tag:'quantum',desc:'Энергия фотона расходуется на работу выхода и кинетику е-.',detail:'Нобелевская премия 1921. Красная граница ν_min=A/h.'},
+  {name:'Закон радиоактивного распада',sym:'N = N₀·2^(−t/T)',tag:'quantum',desc:'Число атомов убывает экспоненциально.',detail:'Статистический закон. T от 10⁻²³с до 10¹⁰лет.'},
+];
+
+function renderF(f='all'){
+  const g=document.getElementById('fgrid');
+  const lst=f==='all'?FM:FM.filter(x=>x.tag===f);
+  g.innerHTML=lst.map(x=>{
+    const i=FM.indexOf(x);
+    return `<div class="fc" onclick="openF(${i})"><span class="fsym">${x.sym}</span><div class="fn">${x.name}</div><div class="fd">${x.desc}</div><span class="ftag">${x.tag}</span></div>`;
+  }).join('');
+}
+
+function filterF(cat,btn){
+  document.querySelectorAll('#ftabs .tb').forEach(b=>b.classList.remove('act'));
+  btn.classList.add('act');renderF(cat);
+}
+
+function renderL(f='all'){
+  const g=document.getElementById('lgrid');
+  const lst=f==='all'?LAWS:LAWS.filter(x=>x.tag===f);
+  g.innerHTML=lst.map(x=>{
+    const i=LAWS.indexOf(x);
+    return `<div class="fc" onclick="openL(${i})"><span class="fsym" style="font-size:1.4rem">${x.sym}</span><div class="fn">${x.name}</div><div class="fd">${x.desc}</div><span class="ftag">${x.tag}</span></div>`;
+  }).join('');
+}
+
+function filterL(cat,btn){
+  document.querySelectorAll('#ltabs .tb').forEach(b=>b.classList.remove('act'));
+  btn.classList.add('act');renderL(cat);
+}
+
+async function openF(idx){
+  const f=FM[idx];
+  document.getElementById('mod-c').innerHTML=`
+    <span class="fsym" style="font-size:2.2rem">${f.sym}</span>
+    <h2 style="font-family:'Playfair Display',serif;font-weight:300;font-size:1.5rem;color:var(--w);margin:10px 0">${f.name}</h2>
+    <p style="font-size:.78rem;color:var(--w3);margin-bottom:18px;line-height:1.7">${f.desc}</p>
+    <div style="padding:16px;background:rgba(2,5,14,.8);border:1px solid var(--border);border-radius:6px;font-size:.84rem;color:var(--w);line-height:1.85;font-weight:200;margin-bottom:18px">${f.detail}</div>
+    <button class="gbtn" onclick="aiF(${idx})">Dual-AI объяснение формулы</button>
+    <div id="mod-ai" style="margin-top:14px;display:none"></div>`;
+  document.getElementById('fmod').classList.add('open');
+}
+
+async function openL(idx){
+  const l=LAWS[idx];
+  document.getElementById('mod-c').innerHTML=`
+    <span class="fsym" style="font-size:1.5rem">${l.sym}</span>
+    <h2 style="font-family:'Playfair Display',serif;font-weight:300;font-size:1.5rem;color:var(--w);margin:10px 0">${l.name}</h2>
+    <div style="padding:16px;background:rgba(2,5,14,.8);border:1px solid var(--border);border-radius:6px;font-size:.84rem;color:var(--w);line-height:1.85;font-weight:200;margin-bottom:18px">${l.desc}<br><br>${l.detail}</div>
+    <button class="gbtn" onclick="aiL('${l.name.replace(/'/g,"\\'")}')">Dual-AI объяснение закона</button>
+    <div id="mod-ai" style="margin-top:14px;display:none"></div>`;
+  document.getElementById('fmod').classList.add('open');
+}
+
+async function aiF(idx){
+  const f=FM[idx],el=document.getElementById('mod-ai');
+  el.style.display='block';el.textContent='Gemini и Groq анализируют...';
+  try{
+    const[g,r]=await Promise.all([
+      gemini(`Объясни формулу "${f.name}" (${f.sym}). Физический смысл, история открытия, примеры применения, ограничения. Для школьников. На русском.`),
+      gemini(`Формула ${f.sym} — ${f.name}. Объясни интересно и увлекательно: откуда взялась, где встречается в жизни и технике, неожиданные применения. На русском.`)
+    ]);
+    const fin=await gemini(`Два объяснения формулы ${f.sym}:\n1: ${g}\n2: ${r}\nСоздай лучшее объяснение: смысл → история → примеры → ограничения. На русском.`);
+    el.textContent=fin;
+  }catch(e){el.textContent='Ошибка: '+e.message;}
+}
+
+async function aiL(name){
+  const el=document.getElementById('mod-ai');
+  el.style.display='block';el.textContent='Анализирую...';
+  try{
+    const[g,r]=await Promise.all([
+      gemini(`Закон физики: "${name}". Строгая формулировка, доказательство, следствия, применения. На русском.`),
+      gemini(`Закон "${name}": история открытия, интересные факты, парадоксы, неожиданные применения в современной технике. На русском.`)
+    ]);
+    const fin=await gemini(`Два рассказа о законе "${name}":\nТеория: ${g}\nИстория: ${r}\nСоздай полный увлекательный рассказ — от истории до современности. На русском.`);
+    el.textContent=fin;
+  }catch(e){el.textContent='Ошибка: '+e.message;}
+}
+
+function closeMod(){document.getElementById('fmod').classList.remove('open');}
+document.getElementById('fmod').addEventListener('click',function(e){if(e.target===this)closeMod();});
+
+/* ===== INIT ===== */
+renderF();renderL();
+const today=new Date().toISOString().split('T')[0];
+document.querySelectorAll('input[type="date"]').forEach(i=>i.value=today);
+
+// Set footer logo
+const navLogo=document.querySelector('.nl-logo img');
+if(navLogo)document.getElementById('foot-logo').src=navLogo.src;
+</script>
+</body>
+</html>
