@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AktronPhs — Triple-AI Physics Platform</title>
+<title>AktronPhs — Quad-AI Physics Platform</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,300;0,400;0,700;1,300;1,400&family=JetBrains+Mono:wght@300;400;500&family=Jost:wght@100;200;300;400;500&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -278,7 +278,7 @@ footer{padding:50px 36px;text-align:center;border-top:1px solid var(--border);ba
     <div>
       <div style="display:flex;align-items:center;gap:6px">
         <span class="nl-name">AktronPhs</span>
-        <span class="nl-badge">Triple-AI</span>
+        <span class="nl-badge">Quad-AI</span>
       </div>
     </div>
   </a>
@@ -369,7 +369,7 @@ footer{padding:50px 36px;text-align:center;border-top:1px solid var(--border);ba
       <div class="fg">
         <label class="fl">Режим ИИ</label>
         <select class="fs" id="vis-mode">
-          <option value="dual">Triple-AI (Gemini + Groq + DeepSeek)</option>
+          <option value="dual">Quad-AI (LLaMA + Mixtral + Qwen + DeepSeek)</option>
           <option value="gemini">Только Gemini</option>
         </select>
       </div>
@@ -389,7 +389,7 @@ footer{padding:50px 36px;text-align:center;border-top:1px solid var(--border);ba
     </div>
     <button class="gbtn" id="vis-btn" onclick="analyzePhoto()">
       <svg viewBox="0 0 13 13" fill="none"><path d="M6.5 1L8 5H12L8.8 7.5L9.8 11.5L6.5 9.2L3.2 11.5L4.2 7.5L1 5H5L6.5 1Z" stroke="currentColor" stroke-width=".8" fill="none"/></svg>
-      Анализировать фото с Dual-AI
+      Анализировать фото с Quad-AI
     </button>
     <div class="lb" id="vis-lb"></div>
     <div class="debate-wrap" id="vis-debate"></div>
@@ -432,7 +432,7 @@ footer{padding:50px 36px;text-align:center;border-top:1px solid var(--border);ba
     </div>
     <button class="gbtn" id="t-btn" onclick="genTasks()">
       <svg viewBox="0 0 13 13" fill="none"><path d="M2 6.5A4.5 4.5 0 0111 6.5" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/><path d="M9.5 4.5L11 6.5L12.5 4.5" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      Сгенерировать с Dual-AI
+      Сгенерировать с Quad-AI
     </button>
     <div class="lb" id="t-lb"></div>
     <div class="debate-wrap" id="t-debate"></div>
@@ -522,7 +522,7 @@ footer{padding:50px 36px;text-align:center;border-top:1px solid var(--border);ba
     </div>
     <button class="gbtn" onclick="explainTask()">
       <svg viewBox="0 0 13 13" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="currentColor" stroke-width=".9"/><path d="M6.5 4V6.5M6.5 8.5V9" stroke="currentColor" stroke-width="1" stroke-linecap="round"/></svg>
-      Объяснить с Dual-AI
+      Объяснить с Quad-AI
     </button>
     <div class="lb" id="e-lb"></div>
     <div class="debate-wrap" id="e-debate"></div>
@@ -608,7 +608,7 @@ footer{padding:50px 36px;text-align:center;border-top:1px solid var(--border);ba
     <div class="chat-m" id="chatm">
       <div class="msg ai">
         <div class="mav"><svg viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="5" stroke="rgba(200,215,240,0.5)" stroke-width=".8"/><circle cx="7" cy="7" r="1.8" fill="rgba(200,215,240,0.3)"/></svg></div>
-        <div class="mb">Привет! Я AktronPhs — Triple-AI физика-ассистент.<br><br>Задавайте любые вопросы по физике. Gemini, Groq и DeepSeek работают вместе: сначала совещаются, потом дают вам лучший синтезированный ответ — от классической механики до квантовой физики.</div>
+        <div class="mb">Привет! Я AktronPhs — Quad-AI физика-ассистент.<br><br>Задавайте любые вопросы по физике. LLaMA, Mixtral, Qwen и DeepSeek работают вместе: сначала совещаются, потом дают вам лучший синтезированный ответ — от классической механики до квантовой физики.</div>
       </div>
     </div>
     <div class="cir">
@@ -660,7 +660,7 @@ footer{padding:50px 36px;text-align:center;border-top:1px solid var(--border);ba
         <div class="fg"><label class="fl">Дата</label><input class="fi" id="tch-date" type="date"></div>
         <div class="fg"><label class="fl">Классы</label><input class="fi" id="tch-cls" placeholder="10А, 10Б"></div>
       </div>
-      <button class="gbtn" onclick="teachGen()">Создать с Dual-AI</button>
+      <button class="gbtn" onclick="teachGen()">Создать с Quad-AI</button>
       <div class="lb" id="tch-lb"></div>
       <div class="debate-wrap" id="tch-debate"></div>
       <div id="tch-dl" style="display:none">
@@ -813,110 +813,103 @@ footer{padding:50px 36px;text-align:center;border-top:1px solid var(--border);ba
     <img id="foot-logo" alt="AktronPhs">
     <span>AktronPhs</span>
   </div>
-  <p class="ft">Triple-AI Physics Platform &nbsp;·&nbsp; Gemini 2.0 Flash + Groq LLaMA 3.3 + DeepSeek &nbsp;·&nbsp; 10 модулей &nbsp;·&nbsp; 200+ формул и законов</p>
+  <p class="ft">Quad-AI Physics Platform &nbsp;·&nbsp; Groq LLaMA 3.3-70B + Groq Mixtral + Together Qwen2.5-72B + DeepSeek &nbsp;·&nbsp; 10 модулей &nbsp;·&nbsp; 200+ формул</p>
   <div class="dual-indicator">
     <div class="di-gem"></div>
-    <span style="font-family:'JetBrains Mono',monospace;font-size:0.5rem;color:var(--mono);letter-spacing:.2em">GEMINI</span>
+    <span style="font-family:'JetBrains Mono',monospace;font-size:0.5rem;color:var(--mono);letter-spacing:.2em">LLAMA</span>
     <span style="font-size:.4rem;color:var(--w4)">+</span>
     <div class="di-grq"></div>
-    <span style="font-family:'JetBrains Mono',monospace;font-size:0.5rem;color:var(--mono);letter-spacing:.2em">GROQ</span>
+    <span style="font-family:'JetBrains Mono',monospace;font-size:0.5rem;color:var(--mono);letter-spacing:.2em">MIXTRAL</span>
     <span style="font-size:.4rem;color:var(--w4)">+</span>
-    <div style="width:6px;height:6px;border-radius:50%;background:rgba(160,160,160,0.7)"></div>
+    <div style="width:6px;height:6px;border-radius:50%;background:rgba(180,180,180,0.7)"></div>
+    <span style="font-family:'JetBrains Mono',monospace;font-size:0.5rem;color:var(--mono);letter-spacing:.2em">QWEN</span>
+    <span style="font-size:.4rem;color:var(--w4)">+</span>
+    <div style="width:6px;height:6px;border-radius:50%;background:rgba(140,140,140,0.7)"></div>
     <span style="font-family:'JetBrains Mono',monospace;font-size:0.5rem;color:var(--mono);letter-spacing:.2em">DEEPSEEK</span>
   </div>
 </footer>
 </div>
 <script>
-/* ===== TRIPLE-AI ENGINE: Gemini 2.0 Flash + Groq LLaMA + DeepSeek ===== */
-const GEMINI_KEY='AIzaSyDRcHUFNRl27LbLz0q3XNMuINt18ziY7Tc';
+/* ===== QUAD-AI ENGINE: Groq LLaMA-3.3-70B + Groq Mixtral + DeepSeek + Together AI ===== */
 const GROQ_KEY='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';
 const DEEPSEEK_KEY='sk-a988db3bc9d843ed9084dcefcd4cadee';
+const TOGETHER_KEY='nrqnY6CfX3HpTYYJuHreqfHJiBOt2IosdWLXTCJH';
+// Gemini сохраняем только для Vision (фото задач)
+const GEMINI_KEY='AIzaSyDRcHUFNRl27LbLz0q3XNMuINt18ziY7Tc';
 
-const GEMINI_URL=`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_KEY}`;
 const GROQ_URL='https://api.groq.com/openai/v1/chat/completions';
 const DEEPSEEK_URL='https://api.deepseek.com/chat/completions';
+const TOGETHER_URL='https://api.together.xyz/v1/chat/completions';
 
-async function gemini(prompt, imgBase64=null){
-  // Vision — только Gemini
-  if(imgBase64){
-    for(const model of ['gemini-1.5-flash','gemini-2.0-flash']){
-      try{
-        const r=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${GEMINI_KEY}`,{
-          method:'POST',headers:{'Content-Type':'application/json'},
-          body:JSON.stringify({contents:[{parts:[{inline_data:{mime_type:'image/jpeg',data:imgBase64}},{text:prompt}]}],generationConfig:{temperature:0.7,maxOutputTokens:2000}})
-        });
-        const d=await r.json();
-        if(!d.error) return d.candidates[0].content.parts[0].text;
-      }catch(e){}
-    }
-    throw new Error('Gemini Vision недоступен');
-  }
-  // Текст — пробуем Gemini 1.5-flash и 2.0-flash
-  const isQuotaErr = s => s&&(s.includes('quota')||s.includes('exceeded')||s.includes('RESOURCE_EXHAUSTED'));
-  for(const model of ['gemini-1.5-flash','gemini-2.0-flash']){
-    try{
-      const r=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${GEMINI_KEY}`,{
-        method:'POST',headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({contents:[{parts:[{text:prompt}]}],generationConfig:{temperature:0.7,maxOutputTokens:2000}})
-      });
-      const d=await r.json();
-      if(d.error){
-        if(isQuotaErr(d.error.message)) continue; // квота — пробуем следующую модель
-        throw new Error('FATAL:'+d.error.message);
-      }
-      return d.candidates[0].content.parts[0].text;
-    }catch(e){
-      if(e.message.startsWith('FATAL:')) throw new Error(e.message.replace('FATAL:','Gemini: '));
-      // сетевая или quota ошибка — идём дальше
-    }
-  }
-  // Оба Gemini упали — фоллбэк на Groq Gemma2
-  const r=await fetch(GROQ_URL,{
-    method:'POST',
-    headers:{'Content-Type':'application/json','Authorization':'Bearer '+GROQ_KEY},
-    body:JSON.stringify({
-      model:'gemma2-9b-it',
-      messages:[
-        {role:'system',content:'Ты эксперт-физик. Отвечай академически точно и структурированно. На русском языке.'},
-        {role:'user',content:prompt}
-      ],
-      temperature:0.7,max_tokens:1500
-    })
-  });
-  const d=await r.json();
-  if(d.error) throw new Error('Groq fallback: '+(d.error.message||JSON.stringify(d.error)));
-  return d.choices[0].message.content;
-}
-
-async function groq(prompt){
+/* --- Groq LLaMA 3.3-70B: академический аналитик --- */
+async function callGroqLlama(prompt){
   const r=await fetch(GROQ_URL,{
     method:'POST',
     headers:{'Content-Type':'application/json','Authorization':'Bearer '+GROQ_KEY},
     body:JSON.stringify({
       model:'llama-3.3-70b-versatile',
       messages:[
-        {role:'system',content:'Ты физик-педагог. Объясняй живо, с аналогиями и примерами из реальной жизни. Отвечай на русском языке. Будь лаконичен — не более 300 слов.'},
+        {role:'system',content:'Ты физик-эксперт. Давай академически точные, структурированные ответы. Формулы, законы, доказательства. До 250 слов. На русском.'},
         {role:'user',content:prompt}
       ],
-      temperature:0.75,max_tokens:1500
+      temperature:0.65,max_tokens:1200
     })
   });
   const d=await r.json();
-  if(d.error) throw new Error('Groq: '+d.error.message);
+  if(d.error) throw new Error('Groq LLaMA: '+d.error.message);
   return d.choices[0].message.content;
 }
 
-async function deepseek(prompt){
+/* --- Groq Mixtral: педагог с примерами --- */
+async function callGroqMixtral(prompt){
+  const r=await fetch(GROQ_URL,{
+    method:'POST',
+    headers:{'Content-Type':'application/json','Authorization':'Bearer '+GROQ_KEY},
+    body:JSON.stringify({
+      model:'mixtral-8x7b-32768',
+      messages:[
+        {role:'system',content:'Ты физик-педагог. Объясняй живо: аналогии из жизни, примеры, неожиданные факты. До 250 слов. На русском.'},
+        {role:'user',content:prompt}
+      ],
+      temperature:0.75,max_tokens:1200
+    })
+  });
+  const d=await r.json();
+  if(d.error) throw new Error('Groq Mixtral: '+d.error.message);
+  return d.choices[0].message.content;
+}
+
+/* --- Together AI (Qwen2.5-72B): третья перспектива --- */
+async function callTogether(prompt){
+  const r=await fetch(TOGETHER_URL,{
+    method:'POST',
+    headers:{'Content-Type':'application/json','Authorization':'Bearer '+TOGETHER_KEY},
+    body:JSON.stringify({
+      model:'Qwen/Qwen2.5-72B-Instruct-Turbo',
+      messages:[
+        {role:'system',content:'Ты физик-исследователь. Давай свежий взгляд: современные применения, связи с другими науками, нестандартные подходы. До 250 слов. На русском.'},
+        {role:'user',content:prompt}
+      ],
+      temperature:0.7,max_tokens:1200
+    })
+  });
+  const d=await r.json();
+  if(d.error) throw new Error('Together: '+d.error.message);
+  return d.choices[0].message.content;
+}
+
+/* --- DeepSeek: финальный синтез всех трёх --- */
+async function callDeepSeek(synthPrompt){
   const r=await fetch(DEEPSEEK_URL,{
     method:'POST',
     headers:{'Content-Type':'application/json','Authorization':'Bearer '+DEEPSEEK_KEY},
     body:JSON.stringify({
       model:'deepseek-chat',
       messages:[
-        {role:'system',content:'Ты синтезатор знаний. Получив несколько объяснений, создай лучший итоговый ответ: структурированный, точный и понятный. Отвечай на русском. Не повторяй формулировки — создай новый, улучшенный текст.'},
-        {role:'user',content:prompt}
+        {role:'system',content:'Ты мастер синтеза. Получив 3 ответа от разных ИИ, создай единый идеальный ответ: структура первого + живость второго + современность третьего. Не повторяй — создавай новый, лучший текст. На русском.'},
+        {role:'user',content:synthPrompt}
       ],
-      temperature:0.5,max_tokens:2000
+      temperature:0.45,max_tokens:1800
     })
   });
   const d=await r.json();
@@ -924,58 +917,88 @@ async function deepseek(prompt){
   return d.choices[0].message.content;
 }
 
-/* ===== TRIPLE AI DEBATE ENGINE ===== */
-async function dualAI(container, gemPrompt, groqPrompt, synthPrompt, imgBase64=null){
+/* --- Gemini только для Vision (фото задач) --- */
+async function geminiVision(prompt, imgBase64){
+  for(const model of ['gemini-1.5-flash','gemini-2.0-flash']){
+    try{
+      const r=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${GEMINI_KEY}`,{
+        method:'POST',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({contents:[{parts:[{inline_data:{mime_type:'image/jpeg',data:imgBase64}},{text:prompt}]}],generationConfig:{temperature:0.7,maxOutputTokens:2000}})
+      });
+      const d=await r.json();
+      if(!d.error) return d.candidates[0].content.parts[0].text;
+    }catch(e){}
+  }
+  // Фоллбэк: Together AI vision
+  return await callTogether('Физическая задача (изображение недоступно): '+prompt);
+}
+
+/* --- Обёртка для совместимости: gemini() теперь = callGroqLlama() --- */
+async function gemini(prompt, imgBase64=null){
+  if(imgBase64) return await geminiVision(prompt, imgBase64);
+  return await callGroqLlama(prompt);
+}
+
+/* --- Обёртка для совместимости: groq() = callGroqMixtral() --- */
+async function groq(prompt){
+  return await callGroqMixtral(prompt);
+}
+
+/* --- Обёртка для совместимости: deepseek() = callDeepSeek() --- */
+async function deepseek(prompt){
+  return await callDeepSeek(prompt);
+}
+
+/* ===== QUAD-AI DEBATE ENGINE ===== */
+async function dualAI(container, p1, p2, synthPrompt, imgBase64=null){
   const wrap=document.getElementById(container);
   wrap.className='debate-wrap show';
   wrap.innerHTML=`
     <div class="debate-header">
-      <span class="dh-title">3 нейросети совещаются...</span>
+      <span class="dh-title">4 нейросети совещаются...</span>
       <div class="thinking-dots"><div class="td"></div><div class="td"></div><div class="td"></div></div>
     </div>
-    <div class="ai-step gem" id="${container}-gem">
-      <div class="step-label"><div class="dot"></div>Gemini 2.0 Flash — академический анализ</div>
+    <div class="ai-step gem show" id="${container}-gem">
+      <div class="step-label"><div class="dot"></div>Groq LLaMA 3.3-70B — экспертный анализ</div>
       <div class="step-body" id="${container}-gem-b">Анализирует...</div>
     </div>
-    <div class="ai-step grq" id="${container}-grq">
-      <div class="step-label"><div class="dot"></div>Groq LLaMA 3.3-70B — педагогический взгляд</div>
+    <div class="ai-step grq show" id="${container}-grq">
+      <div class="step-label"><div class="dot"></div>Groq Mixtral 8x7B — педагогический взгляд</div>
       <div class="step-body" id="${container}-grq-b">Думает...</div>
+    </div>
+    <div class="ai-step grq show" id="${container}-tog">
+      <div class="step-label"><div class="dot"></div>Together Qwen2.5-72B — свежий взгляд</div>
+      <div class="step-body" id="${container}-tog-b">Исследует...</div>
     </div>
     <div class="ai-step final" id="${container}-fin">
       <div class="step-label"><div class="dot"></div>DeepSeek — финальный синтез</div>
-      <div class="step-body" id="${container}-fin-b">Ожидает результаты...</div>
+      <div class="step-body" id="${container}-fin-b">Ожидает результаты трёх ИИ...</div>
     </div>`;
-
-  document.getElementById(`${container}-gem`).classList.add('show');
-  document.getElementById(`${container}-grq`).classList.add('show');
-
   try {
-    // Gemini + Groq параллельно
-    const [gemRes, groqRes] = await Promise.all([
-      gemini(gemPrompt + '\n\nСтиль: академически точный, структурированный. До 250 слов.', imgBase64),
-      groq(groqPrompt)
+    // Все три модели работают параллельно
+    const [r1, r2, r3] = await Promise.all([
+      callGroqLlama(p1+'\n\nДо 200 слов, структурированно.'),
+      callGroqMixtral(p2+'\n\nДо 200 слов, с примерами.'),
+      callTogether(p1+'\n\nДай свежий, современный взгляд. До 200 слов.')
     ]);
-
-    document.getElementById(`${container}-gem-b`).textContent = gemRes;
-    document.getElementById(`${container}-grq-b`).textContent = groqRes;
-
-    // DeepSeek синтезирует
+    document.getElementById(`${container}-gem-b`).textContent = r1;
+    document.getElementById(`${container}-grq-b`).textContent = r2;
+    document.getElementById(`${container}-tog-b`).textContent = r3;
     document.getElementById(`${container}-fin`).classList.add('show');
-    document.getElementById(`${container}-fin-b`).textContent = 'DeepSeek синтезирует лучшее из двух...';
-
-    const synthInput = `Gemini объяснил:\n${gemRes}\n\nGroq объяснил:\n${groqRes}\n\nЗадача синтеза: ${synthPrompt.replace('{GEM}',gemRes).replace('{GRQ}',groqRes)}\n\nСоздай ЛУЧШИЙ финальный ответ — возьми точность Gemini и живость Groq. Структурированно, на русском.`;
-    const finRes = await deepseek(synthInput);
-
-    document.getElementById(`${container}-fin-b`).textContent = finRes;
-    document.querySelector(`#${container} .debate-header .dh-title`).textContent = '✓ Gemini + Groq + DeepSeek завершили';
+    document.getElementById(`${container}-fin-b`).textContent = 'DeepSeek синтезирует лучшее из трёх...';
+    const synthFull = `LLaMA (эксперт): ${r1}\n\nMixtral (педагог): ${r2}\n\nQwen (исследователь): ${r3}\n\nЗадача синтеза: ${synthPrompt.replace('{GEM}',r1).replace('{GRQ}',r2)}`;
+    const fin = await callDeepSeek(synthFull+'\n\nСоздай ЛУЧШИЙ финальный ответ. На русском.');
+    document.getElementById(`${container}-fin-b`).textContent = fin;
+    document.querySelector(`#${container} .debate-header .dh-title`).textContent = '✓ LLaMA + Mixtral + Qwen + DeepSeek завершили';
     document.querySelector(`#${container} .thinking-dots`).innerHTML = '<span style="font-size:.5rem;color:rgba(200,200,200,0.7);letter-spacing:.2em;font-family:JetBrains Mono,monospace">ГОТОВО</span>';
-
-    return finRes;
+    return fin;
   } catch(e) {
-    document.getElementById(`${container}-fin-b`).textContent = 'Ошибка: '+e.message;
+    if(document.getElementById(`${container}-fin-b`))
+      document.getElementById(`${container}-fin-b`).textContent = 'Ошибка: '+e.message;
     throw e;
   }
 }
+
 
 /* ===== COSMOS ===== */
 (function(){
@@ -1245,16 +1268,17 @@ async function sendMsg(){
   const i=document.getElementById('chin'),m=i.value.trim();
   if(!m)return;i.value='';
   addMsg('u',m);CH.push({role:'user',content:m});
-  const bubble=addMsg('ai','⬡ Gemini + Groq + DeepSeek думают...');
+  const bubble=addMsg('ai','⬡ LLaMA + Mixtral + Qwen думают...');
   try{
     const his=CH.slice(-6).map(x=>x.role+': '+x.content).join('\n');
     const ctx=his?`\n\nКонтекст:\n${his}`:'';
-    const[gRes,grRes]=await Promise.all([
-      gemini(`Физика-вопрос: ${m}${ctx}\n\nОтвечай как физик-эксперт: точно, структурированно, до 200 слов. На русском.`),
-      groq(`Вопрос по физике: ${m}${ctx}\n\nОбъясни как педагог — с аналогиями и примерами. До 200 слов. На русском.`)
+    const[r1,r2,r3]=await Promise.all([
+      callGroqLlama(`Вопрос по физике: ${m}${ctx}\n\nКратко и точно. До 150 слов.`),
+      callGroqMixtral(`Вопрос по физике: ${m}${ctx}\n\nС аналогиями и примерами. До 150 слов.`),
+      callTogether(`Вопрос по физике: ${m}${ctx}\n\nСвежий взгляд, современные применения. До 150 слов.`)
     ]);
-    const synth=await deepseek(
-      `Два объяснения вопроса "${m}":\n\nGemini (эксперт): ${gRes}\n\nGroq (педагог): ${grRes}\n\nСоздай идеальный финальный ответ: точность + понятность. Лаконично, до 250 слов. На русском.`
+    const synth=await callDeepSeek(
+      `Три ответа на вопрос "${m}":\nLLaMA: ${r1}\nMixtral: ${r2}\nQwen: ${r3}\n\nСоздай идеальный итоговый ответ: точность + понятность + актуальность. До 250 слов. На русском.`
     );
     bubble.textContent=synth;CH.push({role:'assistant',content:synth});
   }catch(e){bubble.textContent='Ошибка: '+e.message;}
@@ -1536,7 +1560,7 @@ async function openF(idx){
     <h2 style="font-family:'Playfair Display',serif;font-weight:300;font-size:1.5rem;color:var(--w);margin:10px 0">${f.name}</h2>
     <p style="font-size:.78rem;color:var(--w3);margin-bottom:18px;line-height:1.7">${f.desc}</p>
     <div style="padding:16px;background:rgba(2,5,14,.8);border:1px solid var(--border);border-radius:6px;font-size:.84rem;color:var(--w);line-height:1.85;font-weight:200;margin-bottom:18px">${f.detail}</div>
-    <button class="gbtn" onclick="aiF(${idx})">Dual-AI объяснение формулы</button>
+    <button class="gbtn" onclick="aiF(${idx})">Quad-AI объяснение формулы</button>
     <div id="mod-ai" style="margin-top:14px;display:none"></div>`;
   document.getElementById('fmod').classList.add('open');
 }
@@ -1547,7 +1571,7 @@ async function openL(idx){
     <span class="fsym" style="font-size:1.5rem">${l.sym}</span>
     <h2 style="font-family:'Playfair Display',serif;font-weight:300;font-size:1.5rem;color:var(--w);margin:10px 0">${l.name}</h2>
     <div style="padding:16px;background:rgba(2,5,14,.8);border:1px solid var(--border);border-radius:6px;font-size:.84rem;color:var(--w);line-height:1.85;font-weight:200;margin-bottom:18px">${l.desc}<br><br>${l.detail}</div>
-    <button class="gbtn" onclick="aiL('${l.name.replace(/'/g,"\\'")}')">Dual-AI объяснение закона</button>
+    <button class="gbtn" onclick="aiL('${l.name.replace(/'/g,"\\'")}')">Quad-AI объяснение закона</button>
     <div id="mod-ai" style="margin-top:14px;display:none"></div>`;
   document.getElementById('fmod').classList.add('open');
 }
